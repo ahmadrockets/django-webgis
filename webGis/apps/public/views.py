@@ -5,11 +5,16 @@ from django.urls import reverse
 
 
 def index(request):
-    context = {'segment': 'index'}
+    context = {'segment': 'home'}
 
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
+def about(request):
+    context = {'segment': 'about'}
+
+    html_template = loader.get_template('home/about.html')
+    return HttpResponse(html_template.render(context, request))
 
 def pages(request):
     context = {}
