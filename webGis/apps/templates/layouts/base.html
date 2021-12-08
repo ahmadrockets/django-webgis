@@ -13,7 +13,7 @@
   {% block stylesheets %}{% endblock stylesheets %}
 
 </head>
-<body class="hold-transition {% block body_class %}{% endblock body_class %} sidebar-collapse">
+<body class="hold-transition {% block body_class %}{% endblock body_class %} {% if user.is_authenticated %} {% else %} sidebar-collapse {% endif %}">
 <div class="wrapper">
 
     {% include 'includes/navigation.html' %}

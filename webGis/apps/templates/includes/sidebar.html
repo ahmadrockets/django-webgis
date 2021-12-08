@@ -31,6 +31,53 @@
               </p>
             </a>
           </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a href="{% url 'admn.dashboard' %}" class="nav-link {% if 'dashboard' in segment %} active {% endif %}">
+              <i class="nav-icon fas fa-home"></i>
+              <p>
+                DASHBOARD
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'admn.settingusers' %}" class="nav-link {% if 'settingusers' in segment %} active {% endif %}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                SETTING USERS
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-folder"></i>
+              <p>
+                DATA UMKM
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>DATA UMKM</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>DATA PRODUK</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>VERIFIKASI DATA</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {% else %}
           <li class="nav-item">
             <a href="{% url 'auth.register' %}" class="nav-link">
               <i class="nav-icon fas fa-user-plus"></i>
@@ -39,6 +86,7 @@
               </p>
             </a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a href="{% url 'about' %}" class="nav-link {% if 'about' in segment %} active {% endif %}">
               <i class="nav-icon fas fa-info"></i>
