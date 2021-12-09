@@ -1,40 +1,173 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Dashboard {% endblock %}
+{% block title %} Setting Users {% endblock %}
 
 <!-- Element injected in the BODY element -->
 {% block body_class %} sidebar-mini {% endblock body_class %}
 
-<!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-
+<!-- DataTables -->
+<link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
 {% endblock stylesheets %}
 
+
 {% block content %}
-
 <div class="content-wrapper">
-
   <!-- Main content -->
   <section class="content">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-12">
+            <center>
+              <h1 class="m-0">SETTING USERS</h1>
+            </center>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
     <div class="container-fluid">
-      <!-- Main row -->
       <div class="row">
-        <!-- right col (We are only adding the ID to make the widgets sortable)-->
-        <section class="col-lg-12 connectedSortable">
-          <br>
-          INI SETTING USERS
+        <section class="col-sm-12">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title"></h3>
+              </div>
+            </div>
+            <div class="card-body">
+              <a class="btn btn-primary btn-sm" style="margin-bottom:20px;" onclick="tambahdata()"><i class="fas fa-plus fa-fw"></i> Tambah Data</a>
+              <table id="dt_users" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th width="30"><center>NO</center></th>
+                    <th><center>NAMA</center></th>
+                    <th><center>USERNAME</center></th>
+                    <th><center>ROLE</center></th>
+                    <th><center>EMAIL</center></th>
+                    <th width="150"><center>AKSI</center></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td align="center">AHMAD F</td>
+                    <td align="center">ahmadf</td>
+                    <td align="center">Admin</td>
+                    <td align="center">ahmadrockets@gmail.com</td>
+                    <td align="center">
+                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm"><i class="fas fa-trash fa-fw"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </section>
-        <!-- right col -->
       </div>
-      <!-- /.row (main row) -->
-    </div><!-- /.container-fluid -->
+    </div>
   </section>
   <!-- /.content -->
+</div>
 
+<div class="modal" id="modal_settinguser" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Form User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="user_nama" class="col-sm-3 col-form-label">NAMA</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="user_nama" name="user_nama" placeholder="Masukkan Nama">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="user_username" class="col-sm-3 col-form-label">USERNAME</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="user_username" name="user_username" placeholder="Masukkan Username">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="user_email" class="col-sm-3 col-form-label">EMAIL</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="user_email" name="user_email" placeholder="Masukkan Email">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="user_password" class="col-sm-3 col-form-label">PASSWORD</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Masukkan Password">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="user_repassword" class="col-sm-3 col-form-label">ULANGI PASSWORD</label>
+              <div class="col-sm-9">
+                <input type="password" class="form-control" id="user_repassword" name="user_repassword" placeholder="Masukkan Password">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="user_notelp" class="col-sm-3 col-form-label">NO TELEPON</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="user_notelp" name="user_notelp" placeholder="Masukkan Nomor Telepon">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="user_role" class="col-sm-3 col-form-label">ROLE</label>
+              <div class="col-sm-9">
+                <select class="custom-select" id="user_role" name="user_role">
+                  <option value="">== Silahkan Pilih ==</option>
+                  <option value="admin">Admin</option>
+                  <option value="staff">Pelaku UMKM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i> BATAL</button>
+        <button type="button" class="btn btn-success"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock content %}
 
+
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<!-- DataTables -->
+<script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script>
+  $("#dt_users").DataTable({
+    "responsive": true,
+    "autoWidth": false,
+  });
+  function tambahdata() {
+    $("#modal_settinguser").modal("show");
+    $("#user_nama").val("");
+    $("#user_username").val("");
+    $("#user_email").val("");
+    $("#user_password").val("");
+    $("#user_repassword").val("");
+    $("#user_notelp").val("");
+    $("#user_role").val("");
+  }
+  function edit(id) {
+    $("#modal_settinguser").modal("show");
+  }
+</script>
 {% endblock javascripts %}
