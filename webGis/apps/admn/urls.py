@@ -6,4 +6,5 @@ urlpatterns = [
     path('settingusers', views.settingusersPage, name='admn.settingusers'),
     path('dataumkm', views.dataUmkmPage, name='admn.dataumkm'),
     path('dataproduk', views.dataProdukPage, name='admn.dataproduk'),
+    path('verifikasiumkm', views.verifikasiUMKMPage, name='admn.verifikasiumkm'),
 ]

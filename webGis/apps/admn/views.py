@@ -31,3 +31,10 @@ def dataProdukPage(request):
 
     html_template = loader.get_template('admn/dataproduk.html')
     return HttpResponse(html_template.render(context, request))
+
+@login_required
+def verifikasiUMKMPage(request):
+    context = {'segment': 'dataumkm', 'subsegment':'verifikasiumkm'}
+
+    html_template = loader.get_template('admn/verifikasiumkm.html')
+    return HttpResponse(html_template.render(context, request))
