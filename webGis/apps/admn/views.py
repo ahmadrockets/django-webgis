@@ -24,3 +24,10 @@ def dataUmkmPage(request):
 
     html_template = loader.get_template('admn/dataumkm.html')
     return HttpResponse(html_template.render(context, request))
+
+@login_required
+def dataProdukPage(request):
+    context = {'segment': 'dataumkm', 'subsegment':'dataproduk'}
+
+    html_template = loader.get_template('admn/dataproduk.html')
+    return HttpResponse(html_template.render(context, request))
