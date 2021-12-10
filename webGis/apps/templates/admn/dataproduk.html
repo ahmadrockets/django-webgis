@@ -79,7 +79,7 @@
                     <td align="center"><small class="badge badge-success">Aktif</small></td>
                     <td align="center">
                       <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm"><i class="fas fa-trash fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
                   <tr>
@@ -90,7 +90,7 @@
                     <td align="center"><small class="badge badge-danger">Tidak Aktif</small></td>
                     <td align="center">
                       <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm"><i class="fas fa-trash fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
                 </tbody>
@@ -171,7 +171,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
           BATAL</button>
-        <button type="button" class="btn btn-success"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
+        <button type="button" class="btn btn-success" onclick="simpan()"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
       </div>
     </div>
   </div>
@@ -202,6 +202,23 @@
   }
   function edit(id) {
     $("#modal_settinguser").modal("show");
+  }
+  function simpan() {
+    notifikasi('Sukses', "Data User Berhasil Disimpan", "success", "OK")
+    $("#modal_settinguser").modal("hide");
+  }
+  function hapus() {
+    Swal.fire({
+      title: 'Apakah anda yakin akan menghapus data ini?',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Hapus',
+      denyButtonText: `Batal`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        notifikasi('Sukses', "Data User Berhasil Dihapus", "success", "OK")
+      }
+    })
   }
 </script>
 {% endblock javascripts %}

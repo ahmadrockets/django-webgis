@@ -52,8 +52,8 @@
                     <td align="center">AF STUDIO</td>
                     <td align="center">ahmadf</td>
                     <td align="center">
-                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-check fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm"><i class="fas fa-ban fa-fw"></i></a>
+                      <a class="btn btn-success btn-sm" onclick="verifikasiumkm()"><i class="fas fa-check fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="tolakiumkm()"><i class="fas fa-ban fa-fw"></i></a>
                     </td>
                   </tr>
                 </tbody>
@@ -82,5 +82,44 @@
     "responsive": true,
     "autoWidth": false,
   });
+  function verifikasiumkm() {
+    Swal.fire({
+      title: 'Apakah anda yakin akan memverifikasi data ini?',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Verifikasi',
+      denyButtonText: `Batal`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        notifikasi('Sukses', "Data User Berhasil Diverifikasi", "success", "OK")
+      }
+    })
+  }
+  function verifikasiumkm() {
+    Swal.fire({
+      title: 'Apakah anda yakin akan memverifikasi data ini?',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Verifikasi',
+      denyButtonText: `Batal`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        notifikasi('Sukses', "Data User Berhasil Diverifikasi", "success", "OK")
+      }
+    })
+  }
+  function tolakiumkm() {
+    Swal.fire({
+      title: 'Apakah anda yakin akan menolak data ini?',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Tolak',
+      denyButtonText: `Batal`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        notifikasi('Sukses', "Data User Berhasil Ditolak", "success", "OK")
+      }
+    })
+  }
 </script>
 {% endblock javascripts %}
