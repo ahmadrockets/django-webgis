@@ -1,0 +1,222 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Setting Users {% endblock %}
+
+<!-- Element injected in the BODY element -->
+{% block body_class %} sidebar-mini {% endblock body_class %}
+
+{% block stylesheets %}
+<!-- DataTables -->
+<link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div class="content-wrapper">
+  <!-- Main content -->
+  <section class="content">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-12">
+            <center>
+              <h1 class="m-0">DATA UMKM</h1>
+            </center>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <section class="col-sm-12">
+          <div class="card">
+            <div class="card-header border-0">
+              <div class="d-flex justify-content-between">
+                <h3 class="card-title"></h3>
+              </div>
+            </div>
+            <div class="card-body">
+              <a class="btn btn-primary btn-sm" style="margin-bottom:20px;" onclick="tambahdata()"><i
+                  class="fas fa-plus fa-fw"></i> Tambah Data</a>
+              <table id="dt_users" class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th width="30"><center>NO</center></th>
+                    <th><center>USAHA</center></th>
+                    <th><center>PRODUK</center></th>
+                    <th><center>THN MULAI</center></th>
+                    <th><center>KELURAHAN</center></th>
+                    <th><center>ALAMAT</center></th>
+                    <th width="150"><center>AKSI</center></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td align="center">AF STUDIO</td>
+                    <td align="center">Ahmad Fahrudin</td>
+                    <td align="center">2019</td>
+                    <td align="center">Plembutan</td>
+                    <td align="center">Jl Mangkubumi No 108</td>
+                    <td align="center">
+                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm"><i class="fas fa-trash fa-fw"></i></a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+  <!-- /.content -->
+</div>
+
+<div class="modal" id="modal_settinguser" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Form User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="dataumkm_nama" class="col-sm-3 col-form-label">NAMA USAHA</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_nama" name="dataumkm_nama" placeholder="Masukkan Nama Usaha">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_pemilik" class="col-sm-3 col-form-label">PEMILIK</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_pemilik" name="dataumkm_pemilik"
+                  placeholder="Masukkan Pemilik">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_thnmulai" class="col-sm-3 col-form-label">TAHUN MULAI</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_thnmulai" name="dataumkm_thnmulai" placeholder="Masukkan Tahun Mulai">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_alamat" class="col-sm-3 col-form-label">ALAMAT</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_alamat" name="dataumkm_alamat"
+                  placeholder="Masukkan Alamat">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_kelurahan" class="col-sm-3 col-form-label">KELURAHAN</label>
+              <div class="col-sm-9">
+                <select class="custom-select" id="dataumkm_kelurahan" name="dataumkm_kelurahan">
+                  <option value="">== Silahkan Pilih ==</option>
+                  <option value="Plembutan">Plembutan</option>
+                  <option value="Dengok">Dengok</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_jenisusaha" class="col-sm-3 col-form-label">JENIS USAHA</label>
+              <div class="col-sm-9">
+                <select class="custom-select" id="dataumkm_jenisusaha" name="dataumkm_jenisusaha">
+                  <option value="">== Silahkan Pilih ==</option>
+                  <option value="Kuliner">Kuliner</option>
+                  <option value="Jasa">Jasa</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_koordinat" class="col-sm-3 col-form-label">KOORDINAT</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_koordinat" name="dataumkm_koordinat" placeholder="Masukkan Koordinat lokasi">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_website" class="col-sm-3 col-form-label">WEBSITE</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_website" name="dataumkm_website"
+                  placeholder="Masukkan Website">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_email" class="col-sm-3 col-form-label">EMAIL</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_email" name="dataumkm_email"
+                  placeholder="Masukkan Email">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_instagram" class="col-sm-3 col-form-label">INSTAGRAM</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_instagram" name="dataumkm_instagram" placeholder="Masukkan Instagram">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_fb" class="col-sm-3 col-form-label">FACEBOOK</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_fb" name="dataumkm_fb"
+                  placeholder="Masukkan Facebook">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_twitter" class="col-sm-3 col-form-label">TWITTER</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_twitter" name="dataumkm_twitter" placeholder="Masukkan Twitter">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_keterangan" class="col-sm-3 col-form-label">KETERANGAN</label>
+              <div class="col-sm-9">
+                <textarea class="form-control" placeholder="Masukkan Keterangan" id="dataumkm_keterangan" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
+          BATAL</button>
+        <button type="button" class="btn btn-success"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<!-- DataTables -->
+<script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script>
+  $("#dt_users").DataTable({
+    "responsive": true,
+    "autoWidth": false,
+  });
+  function tambahdata() {
+    $("#modal_settinguser").modal("show");
+    $("#dataumkm_nama").val("");
+    $("#user_username").val("");
+    $("#user_email").val("");
+    $("#user_password").val("");
+    $("#user_repassword").val("");
+    $("#user_notelp").val("");
+    $("#user_role").val("");
+  }
+  function edit(id) {
+    $("#modal_settinguser").modal("show");
+  }
+</script>
+{% endblock javascripts %}

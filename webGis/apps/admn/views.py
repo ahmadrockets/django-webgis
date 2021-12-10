@@ -17,3 +17,10 @@ def settingusersPage(request):
 
     html_template = loader.get_template('admn/settingusers.html')
     return HttpResponse(html_template.render(context, request))
+
+@login_required
+def dataUmkmPage(request):
+    context = {'segment': 'dataumkm', 'subsegment':'dataumkm'}
+
+    html_template = loader.get_template('admn/dataumkm.html')
+    return HttpResponse(html_template.render(context, request))

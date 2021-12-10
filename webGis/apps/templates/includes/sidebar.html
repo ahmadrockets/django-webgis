@@ -61,7 +61,7 @@
             </p>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item has-treeview {% if 'dataumkm' in segment %} menu-open {% endif %}">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-folder"></i>
             <p>
@@ -71,7 +71,7 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="{% url 'admn.dataumkm' %}" class="nav-link {% if 'dataumkm' in subsegment %} active {% endif %}">
                 <i class="far fa-circle nav-icon"></i>
                 <p>DATA UMKM</p>
               </a>
