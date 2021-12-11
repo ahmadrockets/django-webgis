@@ -81,6 +81,19 @@
       confirmButtonText: confirmButtonText
     })
   }
+  function logout() {
+    Swal.fire({
+      title: 'Apakah anda yakin akan keluar dari aplikasi?',
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.assign("{% url 'auth.logout' %}")
+      }
+    })
+  }
 </script>
 {% block javascripts %}{% endblock javascripts %}
 </body>

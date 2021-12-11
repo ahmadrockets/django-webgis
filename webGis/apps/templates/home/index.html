@@ -7,123 +7,208 @@
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
-
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="/static/assets/plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="/static/assets/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="/static/assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="/static/assets/plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="/static/assets/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="/static/assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="/static/assets/plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="/static/assets/plugins/summernote/summernote-bs4.min.css">
-
+<!-- LEAFLET -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+<style>
+  .det-produk{
+    border: 1px solid rgb(136, 136, 136);
+  }
+  .body-produk{
+    padding:4px;
+  }
+  .footer-produk{
+    border-top: 1px solid rgb(136, 136, 136);
+    padding: 4px;
+  }
+</style>
 {% endblock stylesheets %}
 
 {% block content %}
-  
   <div class="content-wrapper">
-
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- Main row -->
         <div class="row">
-          <!-- right col (We are only adding the ID to make the widgets sortable)-->
-          <section class="col-lg-12 connectedSortable">
-            <br>
-            <!-- Map card -->
-            <div class="card bg-gradient-primary">
+            <div class="card" style="width: 100%;">
               <div class="card-header border-0">
-                <h3 class="card-title">
-                  <i class="fas fa-map-marker-alt mr-1"></i>
-                  Visitors
-                </h3>
-                <!-- card tools -->
-                <div class="card-tools">
-                  <button type="button" class="btn btn-primary btn-sm daterange" title="Date range">
-                    <i class="far fa-calendar-alt"></i>
-                  </button>
-                  <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse" title="Collapse">
-                    <i class="fas fa-minus"></i>
-                  </button>
+                <div class="d-flex justify-content-between">
+                  <h3 class="card-title"></h3>
                 </div>
-                <!-- /.card-tools -->
               </div>
               <div class="card-body">
-                <div id="world-map" style="height: 250px; width: 100%;"></div>
-              </div>
-              <!-- /.card-body-->
-              <div class="card-footer bg-transparent">
-                <div class="row">
-                  <div class="col-4 text-center">
-                    <div id="sparkline-1"></div>
-                    <div class="text-white">Visitors</div>
-                  </div>
-                  <!-- ./col -->
-                  <div class="col-4 text-center">
-                    <div id="sparkline-2"></div>
-                    <div class="text-white">Online</div>
-                  </div>
-                  <!-- ./col -->
-                  <div class="col-4 text-center">
-                    <div id="sparkline-3"></div>
-                    <div class="text-white">Sales</div>
-                  </div>
-                  <!-- ./col -->
-                </div>
-                <!-- /.row -->
+                <div id="map" style="width: 100%; height: 450px;"></div>
               </div>
             </div>
-            <!-- /.card -->
-          </section>
-          <!-- right col -->
         </div>
-        <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
-
   </div>
-
+<div class="modal" id="modal_detailmarker" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">DETAIL DATA UMKM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <section class="col-md-12">
+            <table class="table table-bordered">
+              <tr>
+                <td width="200">NAMA USAHA</td>
+                <td>: AF SNACK</td>
+              </tr>
+              <tr>
+                <td>PEMILIK</td>
+                <td>: AHMAD FAHRUDIN</td>
+              </tr>
+              <tr>
+                <td>THN MULAI</td>
+                <td>: 2020</td>
+              </tr>
+              <tr>
+                <td>ALAMAT</td>
+                <td>: Jl Mangkubumi No 108</td>
+              </tr>
+              <tr>
+                <td>KELURAHAN</td>
+                <td>: PLEMBUTAN</td>
+              </tr>
+              <tr>
+                <td>JENIS USAHA</td>
+                <td>: MAKANAN</td>
+              </tr>
+              <tr>
+                <td>NAMA PRODUK</td>
+                <td>: AF FOOD</td>
+              </tr>
+              <tr>
+                <td>WEBSITE</td>
+                <td>: <a href="https://ahmadrockets.github.io/" target="_blank">https://ahmadrockets.github.io</a></td>
+              </tr>
+              <tr>
+                <td>EMAIL</td>
+                <td>: ahmadrockets@gmail.com</td>
+              </tr>
+              <tr>
+                <td>NO TELEPON</td>
+                <td>: 0811231241535</td>
+              </tr>
+              <tr>
+                <td>INSTAGRAM</td>
+                <td>: @userinstagram</td>
+              </tr>
+              <tr>
+                <td>TWITTER</td>
+                <td>: @usertwitter</td>
+              </tr>
+            </table>
+          </section>
+        </div>
+        <div class="row">
+          <div class="bg-gray color-palette" style="width: 100%; padding:10px;"><span>PRODUK</span></div>
+        </div>
+        <div class="row mt-4">
+          <section class="col col-md-4">
+            <div class="card">
+              <div class="card-body">
+                <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo">
+                <div class="det-produk mt-2">
+                  <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
+                    <center><span>DPIPS KERIPIK</span></center>
+                  </div>
+                  <div class="body-produk">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi dicta asperiores laudantium, velit consectetur illum
+                  </div>
+                  <div class="footer-produk">
+                    <center>Rp 5.000</center>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="col col-md-4">
+            <div class="card-body">
+              <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo">
+              <div class="det-produk mt-2">
+                <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
+                  <center><span>KERIPIK PISANG</span></center>
+                </div>
+                <div class="body-produk">
+                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi dicta asperiores laudantium, velit consectetur
+                  illum
+                </div>
+                <div class="footer-produk">
+                  <center>Rp 5.000</center>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="col col-md-4">
+            <div class="card-body">
+              <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo">
+              <div class="det-produk mt-2">
+                <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
+                  <center><span>ROTI FAH</span></center>
+                </div>
+                <div class="body-produk">
+                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi dicta asperiores laudantium, velit consectetur
+                  illum
+                </div>
+                <div class="footer-produk">
+                  <center>Rp 7.500</center>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
+          TUTUP</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-  <!-- ChartJS -->
-  <script src="/static/assets/plugins/chart.js/Chart.min.js"></script>
-  <!-- Sparkline -->
-  <script src="/static/assets/plugins/sparklines/sparkline.js"></script>
-  <!-- JQVMap -->
-  <script src="/static/assets/plugins/jqvmap/jquery.vmap.min.js"></script>
-  <script src="/static/assets/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-  <!-- jQuery Knob Chart -->
-  <script src="/static/assets/plugins/jquery-knob/jquery.knob.min.js"></script>
-  <!-- daterangepicker -->
-  <script src="/static/assets/plugins/moment/moment.min.js"></script>
-  <script src="/static/assets/plugins/daterangepicker/daterangepicker.js"></script>
-  <!-- Tempusdominus Bootstrap 4 -->
-  <script src="/static/assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-  <!-- Summernote -->
-  <script src="/static/assets/plugins/summernote/summernote-bs4.min.js"></script>
-  <!-- overlayScrollbars -->
-  <script src="/static/assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-  <!-- AdminLTE App -->
-  <script src="/static/assets/js/adminlte.js"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="/static/assets/js/pages/dashboard.js"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="/static/assets/js/demo.js"></script>
+<script>
 
+  var map = L.map('map').setView([-7.9422437, 110.5474553], 12);
+
+  var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+  }).addTo(map);
+
+  var locations = [
+      ["LOCATION_1", -7.9422437, 110.5474553],
+      ["LOCATION_2", -7.9414095454811715, 110.5502126250081],
+      ["LOCATION_3", -7.943226578040939, 110.55321669908805],
+      ["LOCATION_4", -7.9395565730300435, 110.54372677856475],
+      ["LOCATION_5", -7.956835932238558, 110.55078319437867],
+      ["LOCATION_6", -7.9361585475376675, 110.57463493875511],
+      ["LOCATION_7", -7.945570841067067, 110.5494559769891]
+  ];
+  for (var i = 0; i < locations.length; i++) {
+    marker = L.marker([locations[i][1], locations[i][2]]).on('click', detailumkm).addTo(map);
+  }
+
+
+  function detailumkm() {
+    $("#modal_detailmarker").modal("show");
+  }
+</script>
 {% endblock javascripts %}
