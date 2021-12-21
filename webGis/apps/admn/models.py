@@ -1,3 +1,56 @@
 from django.db import models
 
-# Create your models here.
+class Kelurahan(models.Model):
+  nama = models.CharField(max_length=50)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  
+  class Meta:
+        db_table = "kelurahan"
+
+class JenisUsaha(models.Model):
+  nama = models.CharField(max_length=50)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  
+  class Meta:
+        db_table = "jenis_usaha"
+
+class DataUmkm(models.Model):
+  STATUS_DATAUMKM = (
+      ("T", "T"),
+      ("F", "F"),
+  )
+  nama_usaha = models.CharField(max_length=50)
+  pemilik = models.CharField(max_length=50, blank=True)
+  thn_mulai = models.IntegerField(blank=True)
+  alamat = models.CharField(max_length=255, blank=True)
+  kelurahan_id = models.IntegerField()
+  jenis_usaha_id = models.IntegerField()
+  namaproduk = models.CharField(max_length=100, blank=True)
+  notelepon = models.CharField(max_length=20, blank=True)
+  koordinat = models.CharField(max_length=100, blank=True)
+  website = models.CharField(max_length=50, blank=True)
+  email = models.CharField(max_length=50, blank=True)
+  instagram = models.CharField(max_length=50, blank=True)
+  facebook = models.CharField(max_length=50, blank=True)
+  twitter = models.CharField(max_length=50, blank=True)
+  keterangan = models.CharField(max_length=255, blank=True)
+  statusverifikasi = models.CharField(max_length=1, choices=STATUS_DATAUMKM, default="F")
+  user_id = models.IntegerField()
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+
+  class Meta:
+        db_table = "dataumkm"
+
+class DataProduk(models.Model):
+  dataumkm_id = models.IntegerField()
+  namaproduk = models.CharField(max_length=100)
+  foto = models.CharField(max_length=255, blank=True)
+  harga = models.DecimalField(max_digits = 20,decimal_places = 2)
+  deskripsi = models.CharField(max_length=255, blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  class Meta:
+        db_table = "produk"
