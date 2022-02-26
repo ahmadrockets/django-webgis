@@ -52,18 +52,20 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% for row in data_umkm %}
                   <tr>
-                    <td>1</td>
-                    <td align="center">AF STUDIO</td>
-                    <td align="center">Ahmad Fahrudin</td>
-                    <td align="center">2019</td>
-                    <td align="center">Plembutan</td>
-                    <td align="center">Jl Mangkubumi No 108</td>
+                    <td>{{forloop.counter}}</td>
+                    <td align="center">{{row.nama_usaha}}</td>
+                    <td align="center">{{row.pemilik}}</td>
+                    <td align="center">{{row.thn_mulai}}</td>
+                    <td align="center">{{row.kelurahan}}</td>
+                    <td align="center">{{row.alamat}}</td>
                     <td align="center">
-                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
+                      <a class="btn btn-success btn-sm" onclick="edit({{row.dataumkm_id}})"><i class="fas fa-edit fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="hapus({{row.dataumkm_id}})"><i class="fas fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
@@ -75,7 +77,7 @@
   <!-- /.content -->
 </div>
 
-<div class="modal" id="modal_settinguser" tabindex="-1" role="dialog">
+<div class="modal" id="modal_settingumkm" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -103,7 +105,7 @@
             <div class="form-group row">
               <label for="dataumkm_thnmulai" class="col-sm-3 col-form-label">TAHUN MULAI</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="dataumkm_thnmulai" name="dataumkm_thnmulai" placeholder="Masukkan Tahun Mulai">
+                <input type="number" class="form-control" id="dataumkm_thnmulai" name="dataumkm_thnmulai" placeholder="Masukkan Tahun Mulai">
               </div>
             </div>
             <div class="form-group row">
@@ -118,8 +120,9 @@
               <div class="col-sm-9">
                 <select class="custom-select" id="dataumkm_kelurahan" name="dataumkm_kelurahan">
                   <option value="">== Silahkan Pilih ==</option>
-                  <option value="Plembutan">Plembutan</option>
-                  <option value="Dengok">Dengok</option>
+                  {% for c_kel in data_kelurahan %}
+                  <option value="{{c_kel.kelurahan_id}}">{{c_kel.nama}}</option>
+                  {% endfor %}
                 </select>
               </div>
             </div>
@@ -128,9 +131,16 @@
               <div class="col-sm-9">
                 <select class="custom-select" id="dataumkm_jenisusaha" name="dataumkm_jenisusaha">
                   <option value="">== Silahkan Pilih ==</option>
-                  <option value="Kuliner">Kuliner</option>
-                  <option value="Jasa">Jasa</option>
+                  {% for c_jenisusaha in data_jenisusaha %}
+                  <option value="{{c_jenisusaha.jenis_usaha_id}}">{{c_jenisusaha.nama}}</option>
+                  {% endfor %}
                 </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_notelepon" class="col-sm-3 col-form-label">NO TELEPON</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="dataumkm_notelepon" name="dataumkm_notelepon" placeholder="Masukkan Nomor Telepon">
               </div>
             </div>
             <div class="form-group row">
@@ -201,18 +211,22 @@
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script>
+  $( document ).ready(function() {
+    window.cmd = "tambah";
+    window.id = "";
+  });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
-  function tambahdata() {
-    $("#modal_settinguser").modal("show");
+  function resetForm(){
     $("#dataumkm_nama").val("");
     $("#dataumkm_pemilik").val("");
     $("#dataumkm_thnmulai").val("");
     $("#dataumkm_alamat").val("");
     $("#dataumkm_kelurahan").val("");
     $("#dataumkm_jenisusaha").val("");
+    $("#dataumkm_notelepon").val("");
     $("#dataumkm_koordinat").val("");
     $("#dataumkm_website").val("");
     $("#dataumkm_email").val("");
@@ -221,14 +235,92 @@
     $("#dataumkm_twitter").val("");
     $("#dataumkm_keterangan").val("");
   }
+  function tambahdata() {
+    window.cmd = "tambah";
+    window.id = "";
+    resetForm();
+    $("#modal_settingumkm").modal("show");
+  }
   function edit(id) {
-    $("#modal_settinguser").modal("show");
+    window.cmd = "edit";
+    window.id = id;
+    resetForm();
+    $.ajax({
+      url: '/admn/getdetailumkm/'+id,
+      type: 'GET',
+      dataType: 'json',
+    })
+    .done(function(respon) {
+      var item = respon.item;
+      $("#dataumkm_nama").val(item.nama_usaha);
+      $("#dataumkm_pemilik").val(item.pemilik);
+      $("#dataumkm_thnmulai").val(item.thn_mulai);
+      $("#dataumkm_alamat").val(item.alamat);
+      $("#dataumkm_kelurahan").val(item.kelurahan_id);
+      $("#dataumkm_jenisusaha").val(item.jenis_usaha_id);
+      $("#dataumkm_notelepon").val(item.notelepon);
+      $("#dataumkm_koordinat").val(item.koordinat);
+      $("#dataumkm_website").val(item.website);
+      $("#dataumkm_email").val(item.email);
+      $("#dataumkm_instagram").val(item.instagram);
+      $("#dataumkm_fb").val(item.facebook);
+      $("#dataumkm_twitter").val(item.twitter);
+      $("#dataumkm_keterangan").val(item.keterangan);
+      $("#modal_settingumkm").modal("show");
+    })
+    .fail(function(jqXHR, exception) {
+      notifikasi('Gagal', "Gagal mendapatkan data UMKM", "error", "OK")
+    });
   }
   function simpan() {
-    notifikasi('Sukses', "Data User Berhasil Disimpan", "success", "OK")
-    $("#modal_settinguser").modal("hide");
+    if (window.cmd == "tambah" || window.cmd == "edit"){
+      var dataJson = JSON.stringify({
+        nama_usaha : $("#dataumkm_nama").val(),
+        pemilik : $("#dataumkm_pemilik").val(),
+        thn_mulai : $("#dataumkm_thnmulai").val(),
+        alamat : $("#dataumkm_alamat").val(),
+        kelurahan_id : $("#dataumkm_kelurahan").val(),
+        jenis_usaha_id : $("#dataumkm_jenisusaha").val(),
+        notelepon : $("#dataumkm_notelepon").val(),
+        koordinat : $("#dataumkm_koordinat").val(),
+        website : $("#dataumkm_website").val(),
+        email : $("#dataumkm_email").val(),
+        instagram : $("#dataumkm_instagram").val(),
+        facebook : $("#dataumkm_fb").val(),
+        twitter : $("#dataumkm_twitter").val(),
+        keterangan : $("#dataumkm_keterangan").val(),
+      });
+      var url = "";
+      var type = "";
+      if(window.cmd == "tambah"){
+        var url = "/admn/umkm";
+        var type = "POST";
+      }else{
+        var url = "/admn/updateumkm/"+window.id;
+        var type = "PATCH";
+      }
+      $.ajax({
+        url: url,
+        type: type,
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        data: dataJson,
+      })
+      .done(function(respon) {
+        notifikasi('Sukses', "Data UMKM Berhasil Disimpan", "success", "OK")
+        $("#modal_settingumkm").modal("hide");
+        setTimeout(window.location.reload(), 2000);
+      })
+      .fail(function(jqXHR, exception) {
+        notifikasi('Gagal', "Data UMKM Gagal Disimpan", "error", "OK")
+      });
+    }else{
+      notifikasi('Gagal', "Invalid Method", "error", "OK")
+    }
   }
-  function hapus() {
+  function hapus(id) {
+    window.cmd = "hapus";
+    window.id = id;
     Swal.fire({
       title: 'Apakah anda yakin akan menghapus data ini?',
       showDenyButton: true,
@@ -237,7 +329,17 @@
       denyButtonText: `Batal`,
     }).then((result) => {
       if (result.isConfirmed) {
-        notifikasi('Sukses', "Data User Berhasil Dihapus", "success", "OK")
+        $.ajax({
+          url: "/admn/deleteumkm/"+id,
+          type: 'DELETE',
+        })
+        .done(function(respon) {
+          notifikasi('Sukses', "Data UMKM Berhasil Dihapus", "success", "OK")
+          setTimeout(window.location.reload(), 2000);
+        })
+        .fail(function(jqXHR, exception) {
+          notifikasi('Gagal', "Data UMKM Berhasil Dihapus", "error", "OK")
+        });
       }
     })
   }

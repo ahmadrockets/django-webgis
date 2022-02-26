@@ -9,9 +9,12 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+from dotenv import load_dotenv
 import os
 from decouple import config
 from pathlib import Path
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,11 +91,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'django_umkm',
-        'USER': 'sammy',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',   
-        'PORT': '3306',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USERNAME"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),   
+        'PORT': os.getenv("DB_PORT"),
     }   
 }
 
@@ -119,13 +122,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'id-ID'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 
-USE_L10N = True
+DATE_INPUT_FORMATS = ["%Y-%m-%d"]
+
+USE_L10N = False
 
 USE_TZ = True
 

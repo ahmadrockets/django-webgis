@@ -39,19 +39,21 @@
             <div class="card-body">
               <div class="row">
                 <section class="col-sm-12">
-                  <form class="form-horizontal">
+                  <form class="form-horizontal" action="" method="post">
+                    {% csrf_token %}
                     <div class="card-body">
                       <div class="form-group row">
                         <label for="search_umkm" class="col-sm-3 col-form-label">UMKM</label>
                         <div class="col-sm-6">
                           <select class="custom-select" id="search_umkm" name="search_umkm">
                             <option value="">== Silahkan Pilih ==</option>
-                            <option value="AF STUDIO">AF STUDIO</option>
-                            <option value="AF BAKERY" selected>AF BAKERY</option>
+                            {% for c_umkm in data_umkm %}
+                            <option value="{{c_umkm.dataumkm_id}}">{{c_umkm.nama_usaha}}</option>
+                            {%endfor%}
                           </select>
                         </div>
                         <div class="col-sm-3">
-                          <a href="#" class="btn btn-primary btn-sm mt-1"><i class="fas fa-search fa-fw"></i> TAMPILKAN DATA</a>
+                          <button type="submit" href="#" class="btn btn-primary btn-sm mt-1"><i class="fas fa-search fa-fw"></i> TAMPILKAN DATA</button>
                         </div>
                       </div>
                     </div>
@@ -71,6 +73,7 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% for row in data_produk %}
                   <tr>
                     <td>1</td>
                     <td align="center">ROTI FAH</td>
@@ -82,17 +85,7 @@
                       <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
-                  <tr>
-                    <td>2</td>
-                    <td align="center">MIE FAH</td>
-                    <td align="center"><a type="button" class="btn btn-block btn-primary btn-xs">Lihat Gambar</a></td>
-                    <td align="center">Rp 5.000</td>
-                    <td align="center"><small class="badge badge-danger">Tidak Aktif</small></td>
-                    <td align="center">
-                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
-                    </td>
-                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
@@ -188,6 +181,9 @@
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script>
+   $( document ).ready(function() {
+    $("#search_umkm").val({{search_umkm}});
+  });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,

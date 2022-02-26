@@ -1,6 +1,7 @@
 from django.db import models
 
 class Kelurahan(models.Model):
+  kelurahan_id = models.AutoField(primary_key=True)
   nama = models.CharField(max_length=50)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
@@ -9,6 +10,7 @@ class Kelurahan(models.Model):
         db_table = "kelurahan"
 
 class JenisUsaha(models.Model):
+  jenis_usaha_id = models.AutoField(primary_key=True)
   nama = models.CharField(max_length=50)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
@@ -21,6 +23,7 @@ class DataUmkm(models.Model):
       ("T", "T"),
       ("F", "F"),
   )
+  dataumkm_id = models.AutoField(primary_key=True)
   nama_usaha = models.CharField(max_length=50)
   pemilik = models.CharField(max_length=50, blank=True)
   thn_mulai = models.IntegerField(blank=True)
@@ -45,11 +48,17 @@ class DataUmkm(models.Model):
         db_table = "dataumkm"
 
 class DataProduk(models.Model):
+  STATUS_PRODUK = (
+      ("T", "T"),
+      ("F", "F"),
+  )
+  produk_id = models.AutoField(primary_key=True)
   dataumkm_id = models.IntegerField()
   namaproduk = models.CharField(max_length=100)
   foto = models.CharField(max_length=255, blank=True)
   harga = models.DecimalField(max_digits = 20,decimal_places = 2)
   deskripsi = models.CharField(max_length=255, blank=True)
+  status = models.CharField(max_length=1, choices=STATUS_PRODUK, default="F")
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
   class Meta:
