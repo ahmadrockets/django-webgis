@@ -70,7 +70,7 @@
                     <th><center>GAMBAR</center></th>
                     <th><center>HARGA</center></th>
                     <th width="100"><center>STATUS</center></th>
-                    <th width="150"><center>AKSI</center></th>
+                    <th width="100"><center>AKSI</center></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -79,7 +79,13 @@
                     <td>{{forloop.counter}}</td>
                     <td align="center">{{row.nama_usaha}}</td>
                     <td align="center">{{row.namaproduk}}</td>
-                    <td align="center"><a onclick="lihatgambar({{row.produk_id}})" type="button" class="btn btn-block btn-primary btn-xs">Lihat Gambar</a></td>
+                    <td align="center">
+                      {% if row.foto != "" %}
+                        <a onclick="lihatgambar({{row.produk_id}})" type="button" class="btn btn-block btn-primary btn-xs">Lihat Gambar</a>
+                      {% else %}
+                        <b>No File</b>
+                      {% endif %}
+                    </td>
                     <td align="center">{{row.harga}}</td>
                     <td align="center">
                       {% if row.status == "T" %}
@@ -153,7 +159,9 @@
               <div class="col-sm-9">
                 <div class="custom-file">
                   <input type="file" class="custom-file-input" id="dataproduk_gambar" name="dataproduk_gambar">
-                  <label class="custom-file-label" for="dataproduk_gambar">Pilih File</label>
+                  <label class="custom-file-label" id="lbl-gambar" for="dataproduk_gambar">Pilih Gambar Produk</label>
+                  <input type="text" id="dataproduk_gambar_edit" name="dataproduk_gambar_edit" style="display:none">
+                  <div id="gambar_sebelumnya"></div>
                 </div>
               </div>
             </div>
@@ -213,22 +221,33 @@
     window.cmd = "tambah";
     window.id = "";
     $("#search_umkm").val({{search_umkm}});
+
+    $('#dataproduk_gambar').on('change',function(){
+        //get the file name
+        var fileName = $(this).val();
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    })
   });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
   function resetForm(){
+    $("#dataproduk_umkm").val("");
     $("#dataproduk_namaproduk").val("");
     $("#dataproduk_keterangan").val("");
     $("#dataproduk_harga").val("");
     $("#dataproduk_gambar").val("");
     $("#dataproduk_status").val("");
+    $("#gambar_sebelumnya").hide();
   }
   function tambahdata() {
     window.cmd = "tambah";
     window.id = "";
     resetForm();
+    $("#dataproduk_umkm").val({{search_umkm}});
+    $("#lbl-gambar").html("Pilih Gambar Produk");
     $("#modal_dataproduk").modal("show");
   }
   function lihatgambar(id){
@@ -250,7 +269,35 @@
   function edit(id) {
     window.cmd = "edit";
     window.id = id;
-    $("#modal_dataproduk").modal("show");
+    resetForm();
+    $.ajax({
+      url: '/admn/getdetailproduk/'+id,
+      type: 'GET',
+    })
+    .done(function(respon) {
+      $("#dataproduk_umkm").val(respon.item.dataumkm_id);
+      $("#dataproduk_namaproduk").val(respon.item.namaproduk);
+      $("#dataproduk_keterangan").val(respon.item.deskripsi);
+      $("#dataproduk_harga").val(respon.item.harga);
+      {% comment %} $("#dataproduk_gambar").val(respon.item.foto); {% endcomment %}
+      $("#dataproduk_gambar_edit").val(respon.item.foto);
+      $("#dataproduk_status").val(respon.item.status);
+
+      if(respon.item.foto!=""){
+        $("#lbl-gambar").html("Ganti Gambar Produk");
+        $("#gambar_sebelumnya").show();
+        var gambar_split = respon.item.foto.split("apps");
+        $("#gambar_sebelumnya").html('<a href="'+gambar_split[1]+'" target="_blank">Lihat Gambar</a>');
+      }else{
+        $("#lbl-gambar").html("Pilih Gambar Produk");
+        $("#gambar_sebelumnya").hide();
+      }
+
+      $("#modal_dataproduk").modal("show");
+    })
+    .fail(function(jqXHR, exception) {
+      notifikasi('Gagal', "Gagal mendapatkan data Produk", "error", "OK")
+    });
   }
   function simpan() {
     if (window.cmd == "tambah" || window.cmd == "edit"){
@@ -262,6 +309,7 @@
       formData.append('keterangan', $("#dataproduk_keterangan").val());
       formData.append('harga', $("#dataproduk_harga").val());
       formData.append('status', $("#dataproduk_status").val());
+      formData.append('gambar_edit', $("#dataproduk_gambar_edit").val());
 
       console.log(formData);
 
@@ -272,7 +320,7 @@
         var type = "POST";
       }else{
         var url = "/admn/updateproduk/"+window.id;
-        var type = "PATCH";
+        var type = "POST";
       }
       $.ajax({
         url: url,

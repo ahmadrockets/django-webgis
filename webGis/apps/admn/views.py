@@ -354,21 +354,43 @@ def getDetailProduct(request, item_id):
 
 @login_required
 @method_decorator(csrf_exempt, name='dispatch')
-@require_http_methods(["PATCH"])
+@require_http_methods(["POST"])
 def updateDataProduk(request, item_id):
-    data = json.loads(request.body.decode("utf-8"))
+    p_umkm = request.POST.get('umkm', '')
+    p_nama_produk = request.POST.get('nama_produk', '')
+    p_keterangan = request.POST.get('keterangan', '')
+    p_harga = request.POST.get('harga', '')
+    p_gambar = request.POST.get('gambar_edit', '')
+    p_status = request.POST.get('status', '')
+
+    # upload function
+    timenow = datetime.datetime.now().strftime('%d%m%Y%H%I%S')
+    img = request.FILES.get('gambar', False)
+
+    if img :
+        img_extension = os.path.splitext(img.name)[1]
+        image_folder = 'apps/static/images/'
+        if not os.path.exists(image_folder):
+            os.mkdir(image_folder)
+
+        img_save_path = image_folder+"produk_"+p_umkm+"_"+timenow+img_extension
+        with open(img_save_path, 'wb+') as f:
+            for chunk in img.chunks():
+                f.write(chunk)
+        
+        p_gambar = img_save_path
 
     response = {}
     status = 400
 
     try : 
         item              = DataProduk.objects.get(produk_id=item_id)
-        item.dataumkm_id  = data['umkm']
-        item.namaproduk   = data['nama_produk']
-        item.foto         = data['keterangan']
-        item.harga        = data['harga']
-        item.deskripsi    = data['gambar']
-        item.status       = data['status']
+        item.dataumkm_id  = p_umkm
+        item.namaproduk   = p_nama_produk
+        item.foto         = p_gambar
+        item.harga        = p_harga
+        item.deskripsi    = p_keterangan
+        item.status       = p_status
         item.save()
         response = {
             'status':'success',
