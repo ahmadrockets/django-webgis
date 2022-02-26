@@ -44,11 +44,12 @@
                   <tr>
                     <th width="30"><center>NO</center></th>
                     <th><center>USAHA</center></th>
-                    <th><center>PRODUK</center></th>
+                    <th><center>PEMILIK</center></th>
                     <th><center>THN MULAI</center></th>
                     <th><center>KELURAHAN</center></th>
                     <th><center>ALAMAT</center></th>
-                    <th width="150"><center>AKSI</center></th>
+                    <th><center>STATUS</center></th>
+                    <th width="100"><center>AKSI</center></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -60,6 +61,15 @@
                     <td align="center">{{row.thn_mulai}}</td>
                     <td align="center">{{row.kelurahan}}</td>
                     <td align="center">{{row.alamat}}</td>
+                    <td align="center">
+                      {% if row.statusverifikasi == "T" %}
+                        <small class="badge badge-success">Aktif</small>
+                      {% elif row.statusverifikasi == "F" %}
+                        <small class="badge badge-warning">Menunggu Verifikasi</small>
+                      {% else %}
+                        <small class="badge badge-danger">Ditolak</small>
+                      {% endif %}
+                    </td>
                     <td align="center">
                       <a class="btn btn-success btn-sm" onclick="edit({{row.dataumkm_id}})"><i class="fas fa-edit fa-fw"></i></a>
                       <a class="btn btn-danger btn-sm" onclick="hapus({{row.dataumkm_id}})"><i class="fas fa-trash fa-fw"></i></a>

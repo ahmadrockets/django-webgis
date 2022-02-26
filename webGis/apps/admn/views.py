@@ -12,6 +12,9 @@ from .models import DataProduk
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+import os
+from django.conf import settings
+import datetime
 
 @login_required
 def dashboard(request):
@@ -67,7 +70,7 @@ def createDataUMKM(request):
     p_twitter = data.get('twitter')
     p_keterangan = data.get('keterangan')
 
-    product_data = {
+    umkm_data = {
         'nama_usaha' : p_nama_usaha,
         'pemilik' : p_pemilik,
         'thn_mulai' : p_thn_mulai,
@@ -89,7 +92,7 @@ def createDataUMKM(request):
     data = {}
     status = 400
     try:
-        dataumkm_item = DataUmkm.objects.create(**product_data)
+        dataumkm_item = DataUmkm.objects.create(**umkm_data)
         data = {
             "status": "success",
             # "message": f"New umkm added to database with id: {dataumkm_item.id}"
@@ -248,8 +251,8 @@ def dataProdukPage(request):
     data_umkm = DataUmkm.objects.all()
     
     data_produk = {}
-    if search_umkm != "" :
-        data_produk = DataProduk.objects.filter(dataumkm_id=search_umkm)
+    if search_umkm != "" and search_umkm != None:
+        data_produk = DataProduk.objects.raw(f'SELECT produk.*, dataumkm.nama_usaha FROM produk JOIN dataumkm ON dataumkm.dataumkm_id = produk.dataumkm_id WHERE produk.dataumkm_id = {search_umkm}')
 
     context = {
         'segment': 'dataumkm', 
@@ -261,6 +264,155 @@ def dataProdukPage(request):
 
     html_template = loader.get_template('admn/dataproduk.html')
     return HttpResponse(html_template.render(context, request))
+
+# API Data Produk
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["POST"])
+def createProduk(request):
+    p_umkm = request.POST.get('umkm', '')
+    p_nama_produk = request.POST.get('nama_produk', '')
+    p_keterangan = request.POST.get('keterangan', '')
+    p_harga = request.POST.get('harga', '')
+    p_gambar = ""
+    p_status = request.POST.get('status', '')
+
+    # upload function
+    timenow = datetime.datetime.now().strftime('%d%m%Y%H%I%S')
+    img = request.FILES.get('gambar', False)
+
+    if img :
+        img_extension = os.path.splitext(img.name)[1]
+        image_folder = 'apps/static/images/'
+        if not os.path.exists(image_folder):
+            os.mkdir(image_folder)
+
+        img_save_path = image_folder+"produk_"+p_umkm+"_"+timenow+img_extension
+        with open(img_save_path, 'wb+') as f:
+            for chunk in img.chunks():
+                f.write(chunk)
+        
+        p_gambar = img_save_path
+
+    product_data = {
+        'dataumkm_id': p_umkm,
+        'namaproduk': p_nama_produk,
+        'foto': p_gambar,
+        'harga': p_harga,
+        'deskripsi': p_keterangan,
+        'status': p_status,
+    }
+    data = {}
+    status = 400
+    try:
+        produk_item = DataProduk.objects.create(**product_data)
+        data = {
+            "status": "success",
+            # "message": f"New prodyct added to database with id: {produk_item.id}"
+            "message": "New product added to database"
+        }
+        status = 201 
+    except Exception as e:
+        data = {
+            "status": "failed",
+            "message": f"failed to save data to database {e}"
+        }
+        status = 400
+    return JsonResponse(data, status=status)
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["GET"])
+def getDetailProduct(request, item_id):
+    response = {}
+    status = 400
+    try : 
+        item    = DataProduk.objects.get(produk_id=item_id)
+        dataItem = {
+            'dataumkm_id' : item.dataumkm_id,
+            'namaproduk' : item.namaproduk,
+            'foto' : item.foto,
+            'harga' : item.harga,
+            'deskripsi' : item.deskripsi,
+            'status' : item.status,
+        }
+        response = {
+            'status':'success',
+            'message': 'Success get data product',
+            'item' : dataItem
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'data not found {e}',
+            'item':{}
+        }
+        status = 400
+        
+    return JsonResponse(response, status=status)
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["PATCH"])
+def updateDataProduk(request, item_id):
+    data = json.loads(request.body.decode("utf-8"))
+
+    response = {}
+    status = 400
+
+    try : 
+        item              = DataProduk.objects.get(produk_id=item_id)
+        item.dataumkm_id  = data['umkm']
+        item.namaproduk   = data['nama_produk']
+        item.foto         = data['keterangan']
+        item.harga        = data['harga']
+        item.deskripsi    = data['gambar']
+        item.status       = data['status']
+        item.save()
+        response = {
+            'status':'success',
+            'message': f'Item {item_id} has been updated'
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'failed update data {e}'
+        }
+        status = 400
+
+    return JsonResponse(response, status=status)
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["DELETE"])
+def deleteDataProduk(request, item_id):
+    response = {}
+    status = 400
+    try : 
+        item     = DataProduk.objects.get(produk_id=item_id)
+        
+        # Delete file
+        if item.foto != "":
+            if os.path.isfile(item.foto):
+                os.remove(item.foto)
+
+
+        item.delete()
+        response = {
+            'status':'success',
+            'message': f'Item {item_id} has been deletd'
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'failed delete data {e}'
+        }
+        status = 400
+
+    return JsonResponse(response, status=status)
 
 @login_required
 def verifikasiUMKMPage(request):

@@ -65,6 +65,7 @@
                 <thead>
                   <tr>
                     <th width="30"><center>NO</center></th>
+                    <th><center>NAMA USAHA</center></th>
                     <th><center>NAMA PRODUK</center></th>
                     <th><center>GAMBAR</center></th>
                     <th><center>HARGA</center></th>
@@ -75,14 +76,21 @@
                 <tbody>
                   {% for row in data_produk %}
                   <tr>
-                    <td>1</td>
-                    <td align="center">ROTI FAH</td>
-                    <td align="center"><a type="button" class="btn btn-block btn-primary btn-xs">Lihat Gambar</a></td>
-                    <td align="center">Rp 5.000</td>
-                    <td align="center"><small class="badge badge-success">Aktif</small></td>
+                    <td>{{forloop.counter}}</td>
+                    <td align="center">{{row.nama_usaha}}</td>
+                    <td align="center">{{row.namaproduk}}</td>
+                    <td align="center"><a onclick="lihatgambar({{row.produk_id}})" type="button" class="btn btn-block btn-primary btn-xs">Lihat Gambar</a></td>
+                    <td align="center">{{row.harga}}</td>
                     <td align="center">
-                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
+                      {% if row.status == "T" %}
+                        <small class="badge badge-success">Aktif</small>
+                      {% else %}
+                        <small class="badge badge-danger">Tidak Aktif</small>
+                      {% endif %}
+                    </td>
+                    <td align="center">
+                      <a class="btn btn-success btn-sm" onclick="edit({{row.produk_id}})"><i class="fas fa-edit fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="hapus({{row.produk_id}})"><i class="fas fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
                   {% endfor %}
@@ -97,7 +105,7 @@
   <!-- /.content -->
 </div>
 
-<div class="modal" id="modal_settinguser" tabindex="-1" role="dialog">
+<div class="modal" id="modal_dataproduk" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -112,10 +120,11 @@
             <div class="form-group row">
               <label for="dataproduk_umkm" class="col-sm-3 col-form-label">UMKM</label>
               <div class="col-sm-9">
-                <select disabled class="custom-select" id="dataproduk_umkm" name="dataproduk_umkm">
+                <select class="custom-select" id="dataproduk_umkm" name="dataproduk_umkm">
                   <option value="">== Silahkan Pilih ==</option>
-                  <option value="AF BAKERY" selected>AF BAKERY</option>
-                  <option value="AF STUDIO">AF STUDIO</option>
+                  {% for cf_umkm in data_umkm %}
+                  <option value="{{cf_umkm.dataumkm_id}}">{{cf_umkm.nama_usaha}}</option>
+                  {% endfor %}
                 </select>
               </div>
             </div>
@@ -135,7 +144,7 @@
             <div class="form-group row">
               <label for="dataproduk_harga" class="col-sm-3 col-form-label">HARGA</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="dataproduk_harga" name="dataproduk_harga"
+                <input type="number" class="form-control" id="dataproduk_harga" name="dataproduk_harga"
                   placeholder="Masukkan Harga">
               </div>
             </div>
@@ -144,7 +153,7 @@
               <div class="col-sm-9">
                 <div class="custom-file">
                   <input type="file" class="custom-file-input" id="dataproduk_gambar" name="dataproduk_gambar">
-                  <label class="custom-file-label" for="customFile">Pilih File</label>
+                  <label class="custom-file-label" for="dataproduk_gambar">Pilih File</label>
                 </div>
               </div>
             </div>
@@ -153,8 +162,8 @@
               <div class="col-sm-9">
                 <select class="custom-select" id="dataproduk_status" name="dataproduk_status">
                   <option value="">== Silahkan Pilih ==</option>
-                  <option value="Aktif">Aktif</option>
-                  <option value="Tidak Aktif">Tidak Aktif</option>
+                  <option value="T">Aktif</option>
+                  <option value="F">Tidak Aktif</option>
                 </select>
               </div>
             </div>
@@ -165,6 +174,25 @@
         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
           BATAL</button>
         <button type="button" class="btn btn-success" onclick="simpan()"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="modal_gambar" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">LIHAT GAMBAR</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="body_modalgambar">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>TUTUP</button>
       </div>
     </div>
   </div>
@@ -182,28 +210,93 @@
 <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script>
    $( document ).ready(function() {
+    window.cmd = "tambah";
+    window.id = "";
     $("#search_umkm").val({{search_umkm}});
   });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
-  function tambahdata() {
-    $("#modal_settinguser").modal("show");
+  function resetForm(){
     $("#dataproduk_namaproduk").val("");
     $("#dataproduk_keterangan").val("");
     $("#dataproduk_harga").val("");
     $("#dataproduk_gambar").val("");
     $("#dataproduk_status").val("");
   }
+  function tambahdata() {
+    window.cmd = "tambah";
+    window.id = "";
+    resetForm();
+    $("#modal_dataproduk").modal("show");
+  }
+  function lihatgambar(id){
+    $.ajax({
+      url: '/admn/getdetailproduk/'+id,
+      type: 'GET',
+    })
+    .done(function(respon) {
+      if(respon.item.foto!=""){
+        var gambar_split = respon.item.foto.split("apps");
+        $("#body_modalgambar").html('<center><img src="'+gambar_split[1]+'" style="max-height:400px" /></center>')
+      }
+      $("#modal_gambar").modal("show");
+    })
+    .fail(function(jqXHR, exception) {
+      notifikasi('Gagal', "Gagal mendapatkan data Produk", "error", "OK")
+    });
+  }
   function edit(id) {
-    $("#modal_settinguser").modal("show");
+    window.cmd = "edit";
+    window.id = id;
+    $("#modal_dataproduk").modal("show");
   }
   function simpan() {
-    notifikasi('Sukses', "Data User Berhasil Disimpan", "success", "OK")
-    $("#modal_settinguser").modal("hide");
+    if (window.cmd == "tambah" || window.cmd == "edit"){
+      var gambar = $('input[name="dataproduk_gambar"]').get(0).files[0];
+      var formData = new FormData();
+      formData.append('gambar', gambar);
+      formData.append('umkm', $("#dataproduk_umkm").val());
+      formData.append('nama_produk', $("#dataproduk_namaproduk").val());
+      formData.append('keterangan', $("#dataproduk_keterangan").val());
+      formData.append('harga', $("#dataproduk_harga").val());
+      formData.append('status', $("#dataproduk_status").val());
+
+      console.log(formData);
+
+      var url = "";
+      var type = "";
+      if(window.cmd == "tambah"){
+        var url = "/admn/produk";
+        var type = "POST";
+      }else{
+        var url = "/admn/updateproduk/"+window.id;
+        var type = "PATCH";
+      }
+      $.ajax({
+        url: url,
+        type: type,
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+      })
+      .done(function(respon) {
+        notifikasi('Sukses', "Data Produk Berhasil Disimpan", "success", "OK")
+        $("#modal_dataproduk").modal("hide");
+        setTimeout(window.location.reload(), 2000);
+      })
+      .fail(function(jqXHR, exception) {
+        notifikasi('Gagal', "Data Produk Gagal Disimpan", "error", "OK")
+      });
+    }else{
+      notifikasi('Gagal', "Invalid Method", "error", "OK")
+    }
   }
-  function hapus() {
+  function hapus(id) {
+    window.cmd = "hapus";
+    window.id = id;
     Swal.fire({
       title: 'Apakah anda yakin akan menghapus data ini?',
       showDenyButton: true,
@@ -212,7 +305,17 @@
       denyButtonText: `Batal`,
     }).then((result) => {
       if (result.isConfirmed) {
-        notifikasi('Sukses', "Data User Berhasil Dihapus", "success", "OK")
+        $.ajax({
+          url: "/admn/deleteproduk/"+id,
+          type: 'DELETE',
+        })
+        .done(function(respon) {
+          notifikasi('Sukses', "Data Produk Berhasil Dihapus", "success", "OK")
+          setTimeout(window.location.reload(), 2000);
+        })
+        .fail(function(jqXHR, exception) {
+          notifikasi('Gagal', "Data Produk Berhasil Dihapus", "error", "OK")
+        });
       }
     })
   }

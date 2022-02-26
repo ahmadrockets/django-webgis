@@ -22,6 +22,7 @@ class DataUmkm(models.Model):
   STATUS_DATAUMKM = (
       ("T", "T"),
       ("F", "F"),
+      ("X", "X"),
   )
   dataumkm_id = models.AutoField(primary_key=True)
   nama_usaha = models.CharField(max_length=50)
@@ -39,8 +40,10 @@ class DataUmkm(models.Model):
   facebook = models.CharField(max_length=50, blank=True)
   twitter = models.CharField(max_length=50, blank=True)
   keterangan = models.CharField(max_length=255, blank=True)
-  statusverifikasi = models.CharField(max_length=1, choices=STATUS_DATAUMKM, default="F")
   user_id = models.IntegerField()
+  statusverifikasi = models.CharField(max_length=1, choices=STATUS_DATAUMKM, default="F")
+  catatan_verifikasi = models.CharField(max_length=255, blank=True)
+  verified_at = models.DateTimeField(null=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
