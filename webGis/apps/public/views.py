@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.conf import settings
 from apps.admn.models import DataUmkm
 from apps.admn.models import DataProduk
+from django.http import JsonResponse
+import json
 
 
 def index(request):
@@ -37,6 +39,32 @@ def detailMarker(request, item_id):
     }
     html_template = loader.get_template('home/detail_marker.html')
     return HttpResponse(html_template.render(context, request))
+
+def detailMarkerPosition(request, item_id):
+    response = {}
+    status = 400
+    try : 
+        item    = DataUmkm.objects.get(dataumkm_id=item_id)
+        dataItem = {
+            'nama_usaha' : item.nama_usaha,
+            'pemilik' : item.pemilik,
+            'koordinat' : item.koordinat,
+        }
+        response = {
+            'status':'success',
+            'message': 'Success get data umkm',
+            'item' : dataItem
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'data not found {e}',
+            'item':{}
+        }
+        status = 400
+        
+    return JsonResponse(response, status=status)
 
 
 def about(request):
