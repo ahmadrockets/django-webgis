@@ -1,0 +1,96 @@
+{% load humanize %}
+<div class="row">
+  <section class="col-md-12">
+    <table class="table table-bordered">
+      <tr>
+        <td width="200">NAMA USAHA</td>
+        <td>: {{detail_umkm.nama_usaha}}</td>
+      </tr>
+      <tr>
+        <td>PEMILIK</td>
+        <td>: {{detail_umkm.pemilik}}</td>
+      </tr>
+      <tr>
+        <td>THN MULAI</td>
+        <td>: {{detail_umkm.thn_mulai}}</td>
+      </tr>
+      <tr>
+        <td>ALAMAT</td>
+        <td>: {{detail_umkm.alamat}}</td>
+      </tr>
+      <tr>
+        <td>KELURAHAN</td>
+        <td>: {{detail_umkm.kelurahan}}</td>
+      </tr>
+      <tr>
+        <td>JENIS USAHA</td>
+        <td>: {{detail_umkm.jenis_usaha}}</td>
+      </tr>
+      <tr>
+        <td>WEBSITE</td>
+        <td>: 
+          {% if detail_umkm.website != "" %}
+          <a href="{{detail_umkm.website}}" target="_blank">{{detail_umkm.website}}</a>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>EMAIL</td>
+        <td>: {{detail_umkm.email}}</td>
+      </tr>
+      <tr>
+        <td>NO TELEPON</td>
+        <td>: {{detail_umkm.notelepon}}</td>
+      </tr>
+      <tr>
+        <td>INSTAGRAM</td>
+        <td>: {{detail_umkm.instagram}}</td>
+      </tr>
+      <tr>
+        <td>FACEBOOK</td>
+        <td>: {{detail_umkm.facebook}}</td>
+      </tr>
+      <tr>
+        <td>TWITTER</td>
+        <td>: {{detail_umkm.twitter}}</td>
+      </tr>
+      <tr>
+        <td>KETERANGAN</td>
+        <td>: {{detail_umkm.keterangan}}</td>
+      </tr>
+    </table>
+  </section>
+</div>
+<div class="row">
+  <div class="bg-gray color-palette" style="width: 100%; padding:10px;"><span>PRODUK</span></div>
+</div>
+<div class="row mt-4">
+  {% for prod in data_produk %}
+  <section class="col col-md-4">
+    <div class="card">
+      <div class="card-body">
+        {% if prod.foto != "" %}
+          <img class="img-fluid pad" src="{{prod.foto}}" alt="Photo {{prod.namaproduk}}">
+        {% else %}
+          <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo {{prod.namaproduk}}">
+        {% endif %}
+        <div class="det-produk mt-2">
+          <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
+            <center><span>{{prod.namaproduk}}</span></center>
+          </div>
+          <div class="body-produk">
+            {{prod.deskripsi}}
+          </div>
+          <div class="footer-produk">
+            <center>
+              {% if prod.harga != "" %}
+                Rp {{ prod.harga|stringformat:'0.0f'|intcomma }}
+              {% endif %}
+            </center>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endfor %}
+</div>

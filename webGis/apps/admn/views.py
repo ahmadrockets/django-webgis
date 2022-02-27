@@ -296,7 +296,7 @@ def createProduk(request):
             for chunk in img.chunks():
                 f.write(chunk)
         
-        p_gambar = img_save_path
+        p_gambar = img_save_path.split("apps")[1]
 
     product_data = {
         'dataumkm_id': p_umkm,
@@ -382,7 +382,7 @@ def updateDataProduk(request, item_id):
             for chunk in img.chunks():
                 f.write(chunk)
         
-        p_gambar = img_save_path
+        p_gambar = img_save_path.split("apps")[1]
 
     response = {}
     status = 400
@@ -421,8 +421,8 @@ def deleteDataProduk(request, item_id):
         
         # Delete file
         if item.foto != "":
-            if os.path.isfile(item.foto):
-                os.remove(item.foto)
+            if os.path.isfile('apps'+item.foto):
+                os.remove('apps'+item.foto)
 
 
         item.delete()

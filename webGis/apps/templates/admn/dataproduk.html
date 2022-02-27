@@ -262,8 +262,7 @@
     })
     .done(function(respon) {
       if(respon.item.foto!=""){
-        var gambar_split = respon.item.foto.split("apps");
-        $("#body_modalgambar").html('<center><img src="'+gambar_split[1]+'" style="max-height:400px" /></center>')
+        $("#body_modalgambar").html('<center><img src="'+respon.item.foto+'" style="max-height:400px" /></center>')
       }
       $("#modal_gambar").modal("show");
     })
@@ -290,8 +289,7 @@
       if(respon.item.foto!=""){
         $("#lbl-gambar").html("Ganti Gambar Produk");
         $("#gambar_sebelumnya").show();
-        var gambar_split = respon.item.foto.split("apps");
-        $("#gambar_sebelumnya").html('<a href="'+gambar_split[1]+'" target="_blank">Lihat Gambar</a>');
+        $("#gambar_sebelumnya").html('<a href="'+respon.item.foto+'" target="_blank">Lihat Gambar</a>');
       }else{
         $("#lbl-gambar").html("Pilih Gambar Produk");
         $("#gambar_sebelumnya").hide();

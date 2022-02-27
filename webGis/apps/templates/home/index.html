@@ -8,12 +8,6 @@
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}
 <!-- LEAFLET -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-  crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-  crossorigin=""></script>
 <style>
   .det-produk{
     border: 1px solid rgb(136, 136, 136);
@@ -56,120 +50,12 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <div class="row">
-          <section class="col-md-12">
-            <table class="table table-bordered">
-              <tr>
-                <td width="200">NAMA USAHA</td>
-                <td>: AF SNACK</td>
-              </tr>
-              <tr>
-                <td>PEMILIK</td>
-                <td>: AHMAD FAHRUDIN</td>
-              </tr>
-              <tr>
-                <td>THN MULAI</td>
-                <td>: 2020</td>
-              </tr>
-              <tr>
-                <td>ALAMAT</td>
-                <td>: Jl Mangkubumi No 108</td>
-              </tr>
-              <tr>
-                <td>KELURAHAN</td>
-                <td>: PLEMBUTAN</td>
-              </tr>
-              <tr>
-                <td>JENIS USAHA</td>
-                <td>: MAKANAN</td>
-              </tr>
-              <tr>
-                <td>NAMA PRODUK</td>
-                <td>: AF FOOD</td>
-              </tr>
-              <tr>
-                <td>WEBSITE</td>
-                <td>: <a href="https://ahmadrockets.github.io/" target="_blank">https://ahmadrockets.github.io</a></td>
-              </tr>
-              <tr>
-                <td>EMAIL</td>
-                <td>: ahmadrockets@gmail.com</td>
-              </tr>
-              <tr>
-                <td>NO TELEPON</td>
-                <td>: 0811231241535</td>
-              </tr>
-              <tr>
-                <td>INSTAGRAM</td>
-                <td>: @userinstagram</td>
-              </tr>
-              <tr>
-                <td>TWITTER</td>
-                <td>: @usertwitter</td>
-              </tr>
-            </table>
-          </section>
-        </div>
-        <div class="row">
-          <div class="bg-gray color-palette" style="width: 100%; padding:10px;"><span>PRODUK</span></div>
-        </div>
-        <div class="row mt-4">
-          <section class="col col-md-4">
-            <div class="card">
-              <div class="card-body">
-                <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo">
-                <div class="det-produk mt-2">
-                  <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
-                    <center><span>DPIPS KERIPIK</span></center>
-                  </div>
-                  <div class="body-produk">
-                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi dicta asperiores laudantium, velit consectetur illum
-                  </div>
-                  <div class="footer-produk">
-                    <center>Rp 5.000</center>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section class="col col-md-4">
-            <div class="card-body">
-              <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo">
-              <div class="det-produk mt-2">
-                <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
-                  <center><span>KERIPIK PISANG</span></center>
-                </div>
-                <div class="body-produk">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi dicta asperiores laudantium, velit consectetur
-                  illum
-                </div>
-                <div class="footer-produk">
-                  <center>Rp 5.000</center>
-                </div>
-              </div>
-            </div>
-          </section>
-          <section class="col col-md-4">
-            <div class="card-body">
-              <img class="img-fluid pad" src="https://presidenproperti.com/wp-content/uploads/2018/11/blog-ph.jpg" alt="Photo">
-              <div class="det-produk mt-2">
-                <div class="bg-gray color-palette" style="width: 100%; padding:10px;">
-                  <center><span>ROTI FAH</span></center>
-                </div>
-                <div class="body-produk">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi dicta asperiores laudantium, velit consectetur
-                  illum
-                </div>
-                <div class="footer-produk">
-                  <center>Rp 7.500</center>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
+      <div class="modal-body" id="body_detailmarker">
+        
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-success"><i class="fas fa-paper-plane fa-fw"></i>
+          MENUJU LOKASI</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
           TUTUP</button>
       </div>
@@ -180,35 +66,67 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script src="http://maps.google.com/maps/api/js?key={{gmaps_api}}" type="text/javascript"></script>
 <script>
-
-  var map = L.map('map').setView([-7.9422437, 110.5474553], 12);
-
-  var tiles = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1
-  }).addTo(map);
-
   var locations = [
-      ["LOCATION_1", -7.9422437, 110.5474553],
-      ["LOCATION_2", -7.9414095454811715, 110.5502126250081],
-      ["LOCATION_3", -7.943226578040939, 110.55321669908805],
-      ["LOCATION_4", -7.9395565730300435, 110.54372677856475],
-      ["LOCATION_5", -7.956835932238558, 110.55078319437867],
-      ["LOCATION_6", -7.9361585475376675, 110.57463493875511],
-      ["LOCATION_7", -7.945570841067067, 110.5494559769891]
+    {% for row in data_umkm %}
+    [{{row.dataumkm_id}}, "{{row.nama_usaha}}", {{row.koordinat}}],
+    {% endfor %}
   ];
-  for (var i = 0; i < locations.length; i++) {
-    marker = L.marker([locations[i][1], locations[i][2]]).on('click', detailumkm).addTo(map);
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 12,
+    center: new google.maps.LatLng(-7.9422437, 110.5474553),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  });
+  var infowindow = new google.maps.InfoWindow();
+  var marker, i;
+  var icon_umkm = {
+    url: "/static/assets/img/icon_umkm.png", // url
+    scaledSize: new google.maps.Size(25, 25), // scaled size
+    origin: new google.maps.Point(0,0), // origin
+    anchor: new google.maps.Point(0, 0) // anchor
+};
+  for (i = 0; i < locations.length; i++) {  
+    marker = new google.maps.Marker({
+      position: new google.maps.LatLng(locations[i][2], locations[i][3]),
+      map: map,
+      icon:icon_umkm
+    });
+    google.maps.event.addListener(marker, 'click', (function(marker, i) {
+      return function() {
+        infowindow.setContent(locations[i][1]);
+        infowindow.open(map, marker);
+        detailumkm(locations[i][0]);
+      }
+    })(marker, i));
+
+    google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+      return function() {
+        infowindow.setContent(locations[i][1]);
+        infowindow.open(map, marker);
+      }
+    })(marker, i));
+
+    google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
+      return function() {
+        infowindow.close();
+      }
+    })(marker, i));
   }
-
-
-  function detailumkm() {
-    $("#modal_detailmarker").modal("show");
+  function detailumkm(id) {
+    $.ajax({
+      url: '/getdetailmarker/'+id,
+      type: 'GET',
+      dataType: 'html',
+    })
+    .done(function(respon) {
+      $("#body_detailmarker").html(respon);
+      $("#modal_detailmarker").modal("show");
+    })
+    .fail(function(jqXHR, exception) {
+      $("#body_detailmarker").html("");
+      $("#modal_detailmarker").modal("show");
+    });
   }
 </script>
 {% endblock javascripts %}
