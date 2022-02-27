@@ -9,7 +9,15 @@ from apps.admn.models import DataProduk
 
 def index(request):
     gmaps_api = settings.GMAPS_API
-    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id WHERE dataumkm.statusverifikasi="T"')
+    
+    s_umkm = request.GET.get('s_umkm', '')
+
+    if s_umkm != '':
+        data_umkm = DataUmkm.objects.filter( nama_usaha__icontains=s_umkm, statusverifikasi__exact='T' )
+        # query = "SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id WHERE dataumkm.statusverifikasi='T' AND dataumkm.nama_usaha like '%%%s%%'" % (s_umkm)
+    else:
+        data_umkm = DataUmkm.objects.filter(statusverifikasi__exact='T' )
+
     context = {
         'segment': 'home',
         'gmaps_api': gmaps_api,
