@@ -18,7 +18,11 @@ import datetime
 
 @login_required
 def dashboard(request):
-    context = {'segment': 'dashboard'}
+    data_dashboard = Kelurahan.objects.raw('SELECT *, (SELECT COUNT(*) AS jml FROM dataumkm WHERE dataumkm.kelurahan_id=kelurahan.kelurahan_id AND dataumkm.statusverifikasi="T") AS jml FROM kelurahan')
+    context = {
+        'segment': 'dashboard',
+        'data_dashboard': data_dashboard
+    }
 
     html_template = loader.get_template('admn/dashboard.html')
     return HttpResponse(html_template.render(context, request))
@@ -438,7 +442,73 @@ def deleteDataProduk(request, item_id):
 
 @login_required
 def verifikasiUMKMPage(request):
-    context = {'segment': 'dataumkm', 'subsegment':'verifikasiumkm'}
+    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, auth_user.username FROM dataumkm LEFT JOIN auth_user ON dataumkm.user_id = auth_user.id WHERE statusverifikasi = "F"')
+    data_kelurahan = Kelurahan.objects.all()
+    data_jenisusaha = JenisUsaha.objects.all()
+    context = {
+        'segment': 'dataumkm', 
+        'subsegment':'verifikasiumkm',
+        'data_umkm':data_umkm,
+        'data_kelurahan' : data_kelurahan,
+        'data_jenisusaha' : data_jenisusaha
+    }
 
     html_template = loader.get_template('admn/verifikasiumkm.html')
     return HttpResponse(html_template.render(context, request))
+
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["POST"])
+def doVerifikasiUMKM(request, item_id):
+    user_login = request.user
+    response = {}
+    status = 400
+    try : 
+        item                    = DataUmkm.objects.get(dataumkm_id=item_id)
+        item.statusverifikasi   = 'T'
+        item.verified_at        = datetime.datetime.now().strftime('%Y-%m-%d %H:%I:%S')
+        item.verified_by        = user_login.id
+        item.save()
+        response = {
+            'status':'success',
+            'message': f'Item {item_id} has been verified'
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'failed verif data {e}'
+        }
+        status = 400
+
+    return JsonResponse(response, status=status)
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["POST"])
+def doTolakUMKM(request, item_id):
+    user_login = request.user
+    data = json.loads(request.body.decode("utf-8"))
+    response = {}
+    status = 400
+    try : 
+        item                    = DataUmkm.objects.get(dataumkm_id=item_id)
+        item.statusverifikasi   = 'X'
+        item.catatan_verifikasi = data['alasan_penolakan']
+        item.verified_at        = datetime.datetime.now().strftime('%Y-%m-%d %H:%I:%S')
+        item.verified_by        = user_login.id
+        item.save()
+        response = {
+            'status':'success',
+            'message': f'Item {item_id} has been verified'
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'failed verif data {e}'
+        }
+        status = 400
+
+    return JsonResponse(response, status=status)

@@ -42,20 +42,28 @@
                   <tr>
                     <th width="30"><center>NO</center></th>
                     <th><center>USAHA</center></th>
-                    <th><center>USER KLAIM</center></th>
-                    <th width="150"><center>AKSI</center></th>
+                    <th><center>PEMILIK</center></th>
+                    <th width="100"><center>DETAIL</center></th>
+                    <th width="150"><center>USER KLAIM</center></th>
+                    <th width="100"><center>AKSI</center></th>
                   </tr>
                 </thead>
                 <tbody>
+                  {% for row in data_umkm %}
                   <tr>
-                    <td>1</td>
-                    <td align="center">AF STUDIO</td>
-                    <td align="center">ahmadf</td>
+                    <td>{{forloop.counter}}</td>
+                    <td align="center">{{row.nama_usaha}}</td>
+                    <td align="center">{{row.pemilik}}</td>
                     <td align="center">
-                      <a class="btn btn-success btn-sm" onclick="verifikasiumkm()"><i class="fas fa-check fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm" onclick="tolakiumkm()"><i class="fas fa-ban fa-fw"></i></a>
+                      <a onclick="lihatdetail({{row.dataumkm_id}})" type="button" class="btn btn-block btn-primary btn-xs">Lihat Detail</a>
+                    </td>
+                    <td align="center">{{row.username}}</td>
+                    <td align="center">
+                      <a class="btn btn-success btn-sm" onclick="verifikasiumkm({{row.dataumkm_id}})"><i class="fas fa-check fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="tolakumkm({{row.dataumkm_id}})"><i class="fas fa-ban fa-fw"></i></a>
                     </td>
                   </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
@@ -66,6 +74,129 @@
   </section>
   <!-- /.content -->
 </div>
+
+<div class="modal" id="modal_detailumkm" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">DETAIl UMKM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="card-body">
+            <div class="form-group row">
+              <label for="dataumkm_nama" class="col-sm-3 col-form-label">NAMA USAHA</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" disabled id="dataumkm_nama" name="dataumkm_nama" placeholder="Masukkan Nama Usaha">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_pemilik" class="col-sm-3 col-form-label">PEMILIK</label>
+              <div class="col-sm-9">
+                <input type="text" disabled class="form-control" id="dataumkm_pemilik" name="dataumkm_pemilik"
+                  placeholder="Masukkan Pemilik">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_thnmulai" class="col-sm-3 col-form-label">TAHUN MULAI</label>
+              <div class="col-sm-9">
+                <input type="number" disabled class="form-control" id="dataumkm_thnmulai" name="dataumkm_thnmulai" placeholder="Masukkan Tahun Mulai">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_alamat" class="col-sm-3 col-form-label">ALAMAT</label>
+              <div class="col-sm-9">
+                <input type="text" disabled class="form-control" id="dataumkm_alamat" name="dataumkm_alamat"
+                  placeholder="Masukkan Alamat">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_kelurahan" class="col-sm-3 col-form-label">KELURAHAN</label>
+              <div class="col-sm-9">
+                <select disabled class="custom-select" id="dataumkm_kelurahan" name="dataumkm_kelurahan">
+                  <option value="">== Silahkan Pilih ==</option>
+                  {% for c_kel in data_kelurahan %}
+                  <option value="{{c_kel.kelurahan_id}}">{{c_kel.nama}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_jenisusaha" class="col-sm-3 col-form-label">JENIS USAHA</label>
+              <div class="col-sm-9">
+                <select disabled class="custom-select" id="dataumkm_jenisusaha" name="dataumkm_jenisusaha">
+                  <option value="">== Silahkan Pilih ==</option>
+                  {% for c_jenisusaha in data_jenisusaha %}
+                  <option value="{{c_jenisusaha.jenis_usaha_id}}">{{c_jenisusaha.nama}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_notelepon" class="col-sm-3 col-form-label">NO TELEPON</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_notelepon" name="dataumkm_notelepon" placeholder="Masukkan Nomor Telepon">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_koordinat" class="col-sm-3 col-form-label">KOORDINAT</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_koordinat" name="dataumkm_koordinat" placeholder="Masukkan Koordinat lokasi">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_website" class="col-sm-3 col-form-label">WEBSITE</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_website" name="dataumkm_website"
+                  placeholder="Masukkan Website">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_email" class="col-sm-3 col-form-label">EMAIL</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_email" name="dataumkm_email"
+                  placeholder="Masukkan Email">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_instagram" class="col-sm-3 col-form-label">INSTAGRAM</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_instagram" name="dataumkm_instagram" placeholder="Masukkan Instagram">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_fb" class="col-sm-3 col-form-label">FACEBOOK</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_fb" name="dataumkm_fb"
+                  placeholder="Masukkan Facebook">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_twitter" class="col-sm-3 col-form-label">TWITTER</label>
+              <div class="col-sm-9">
+                <input disabled type="text" class="form-control" id="dataumkm_twitter" name="dataumkm_twitter" placeholder="Masukkan Twitter">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="dataumkm_keterangan" class="col-sm-3 col-form-label">KETERANGAN</label>
+              <div class="col-sm-9">
+                <textarea disabled class="form-control" placeholder="Masukkan Keterangan" id="dataumkm_keterangan" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
+          TUTUP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endblock content %}
 
@@ -82,7 +213,7 @@
     "responsive": true,
     "autoWidth": false,
   });
-  function verifikasiumkm() {
+  function verifikasiumkm(id) {
     Swal.fire({
       title: 'Apakah anda yakin akan memverifikasi data ini?',
       showDenyButton: true,
@@ -91,35 +222,79 @@
       denyButtonText: `Batal`,
     }).then((result) => {
       if (result.isConfirmed) {
-        notifikasi('Sukses', "Data User Berhasil Diverifikasi", "success", "OK")
+        $.ajax({
+          url: '/admn/verifdataumkm/'+id,
+          type: 'POST',
+        })
+        .done(function(respon) {
+          notifikasi('Sukses', "Data UMKM Berhasil Diverifikasi", "success", "OK")
+          setTimeout(window.location.reload(), 4000);
+        })
+        .fail(function(jqXHR, exception) {
+          notifikasi('Gagal', "Data UMKM Gagal Diverifikasi", "error", "OK")
+        });
       }
     })
   }
-  function verifikasiumkm() {
-    Swal.fire({
-      title: 'Apakah anda yakin akan memverifikasi data ini?',
-      showDenyButton: true,
-      showCancelButton: false,
-      confirmButtonText: 'Verifikasi',
-      denyButtonText: `Batal`,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        notifikasi('Sukses', "Data User Berhasil Diverifikasi", "success", "OK")
-      }
-    })
-  }
-  function tolakiumkm() {
+  function tolakumkm(id) {
     Swal.fire({
       title: 'Apakah anda yakin akan menolak data ini?',
+      input: 'text',
+      inputLabel: 'Alasan Penolakan',
+      inputPlaceholder: 'Isikan alasan penolakan',
       showDenyButton: true,
       showCancelButton: false,
       confirmButtonText: 'Tolak',
       denyButtonText: `Batal`,
     }).then((result) => {
       if (result.isConfirmed) {
-        notifikasi('Sukses', "Data User Berhasil Ditolak", "success", "OK")
+        var dataJson = JSON.stringify({
+          alasan_penolakan : result.value,
+        });
+        $.ajax({
+          url: '/admn/tolakdataumkm/'+id,
+          type: 'POST',
+          contentType: "application/json; charset=utf-8",
+          dataType: 'json',
+          data: dataJson,
+        })
+        .done(function(respon) {
+          notifikasi('Sukses', "Data UMKM Berhasil Ditolak", "success", "OK")
+          setTimeout(window.location.reload(), 4000);
+        })
+        .fail(function(jqXHR, exception) {
+          notifikasi('Gagal', "Data UMKM Gagal Ditolak", "error", "OK")
+        });
       }
     })
+  }
+  function lihatdetail(id){
+    $.ajax({
+      url: '/admn/getdetailumkm/'+id,
+      type: 'GET',
+      dataType: 'json',
+    })
+    .done(function(respon) {
+      var item = respon.item;
+      $("#dataumkm_nama").val(item.nama_usaha);
+      $("#dataumkm_pemilik").val(item.pemilik);
+      $("#dataumkm_thnmulai").val(item.thn_mulai);
+      $("#dataumkm_alamat").val(item.alamat);
+      $("#dataumkm_kelurahan").val(item.kelurahan_id);
+      $("#dataumkm_jenisusaha").val(item.jenis_usaha_id);
+      $("#dataumkm_notelepon").val(item.notelepon);
+      $("#dataumkm_koordinat").val(item.koordinat);
+      $("#dataumkm_website").val(item.website);
+      $("#dataumkm_email").val(item.email);
+      $("#dataumkm_instagram").val(item.instagram);
+      $("#dataumkm_fb").val(item.facebook);
+      $("#dataumkm_twitter").val(item.twitter);
+      $("#dataumkm_keterangan").val(item.keterangan);
+      $("#modal_detailumkm").modal("show");
+    })
+    .fail(function(jqXHR, exception) {
+      notifikasi('Gagal', "Gagal mendapatkan data UMKM", "error", "OK")
+    });
   }
 </script>
 {% endblock javascripts %}

@@ -21,4 +21,6 @@ urlpatterns = [
     path('deleteproduk/<int:item_id>', views.deleteDataProduk, name='admn.deleteproduk'),
     
     path('verifikasiumkm', views.verifikasiUMKMPage, name='admn.verifikasiumkm'),
+    path('verifdataumkm/<int:item_id>', views.doVerifikasiUMKM, name='admn.doverifikasiumkm'),
+    path('tolakdataumkm/<int:item_id>', views.doTolakUMKM, name='admn.dotolakumkm'),
 ]

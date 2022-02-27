@@ -67,7 +67,8 @@
                       {% elif row.statusverifikasi == "F" %}
                         <small class="badge badge-warning">Menunggu Verifikasi</small>
                       {% else %}
-                        <small class="badge badge-danger">Ditolak</small>
+                        <small class="badge badge-danger">Ditolak</small><br />
+                        ({{row.catatan_verifikasi}})
                       {% endif %}
                     </td>
                     <td align="center">
@@ -319,7 +320,7 @@
       .done(function(respon) {
         notifikasi('Sukses', "Data UMKM Berhasil Disimpan", "success", "OK")
         $("#modal_settingumkm").modal("hide");
-        setTimeout(window.location.reload(), 2000);
+        setTimeout(window.location.reload(), 4000);
       })
       .fail(function(jqXHR, exception) {
         notifikasi('Gagal', "Data UMKM Gagal Disimpan", "error", "OK")
@@ -345,7 +346,7 @@
         })
         .done(function(respon) {
           notifikasi('Sukses', "Data UMKM Berhasil Dihapus", "success", "OK")
-          setTimeout(window.location.reload(), 2000);
+          setTimeout(window.location.reload(), 4000);
         })
         .fail(function(jqXHR, exception) {
           notifikasi('Gagal', "Data UMKM Berhasil Dihapus", "error", "OK")

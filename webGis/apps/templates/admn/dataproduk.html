@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% load humanize %}
 
 {% block title %} Setting Users {% endblock %}
 
@@ -86,7 +87,11 @@
                         <b>No File</b>
                       {% endif %}
                     </td>
-                    <td align="center">{{row.harga}}</td>
+                    <td align="center">
+                      {% if row.harga != "" %}
+                        Rp {{ row.harga|stringformat:'0.0f'|intcomma }}
+                      {% endif %}
+                    </td>
                     <td align="center">
                       {% if row.status == "T" %}
                         <small class="badge badge-success">Aktif</small>
@@ -278,8 +283,7 @@
       $("#dataproduk_umkm").val(respon.item.dataumkm_id);
       $("#dataproduk_namaproduk").val(respon.item.namaproduk);
       $("#dataproduk_keterangan").val(respon.item.deskripsi);
-      $("#dataproduk_harga").val(respon.item.harga);
-      {% comment %} $("#dataproduk_gambar").val(respon.item.foto); {% endcomment %}
+      $("#dataproduk_harga").val(parseInt(respon.item.harga));
       $("#dataproduk_gambar_edit").val(respon.item.foto);
       $("#dataproduk_status").val(respon.item.status);
 
@@ -333,7 +337,7 @@
       .done(function(respon) {
         notifikasi('Sukses', "Data Produk Berhasil Disimpan", "success", "OK")
         $("#modal_dataproduk").modal("hide");
-        setTimeout(window.location.reload(), 2000);
+        setTimeout(window.location.reload(), 4000);
       })
       .fail(function(jqXHR, exception) {
         notifikasi('Gagal', "Data Produk Gagal Disimpan", "error", "OK")
@@ -359,7 +363,7 @@
         })
         .done(function(respon) {
           notifikasi('Sukses', "Data Produk Berhasil Dihapus", "success", "OK")
-          setTimeout(window.location.reload(), 2000);
+          setTimeout(window.location.reload(), 4000);
         })
         .fail(function(jqXHR, exception) {
           notifikasi('Gagal', "Data Produk Berhasil Dihapus", "error", "OK")

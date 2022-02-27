@@ -40,22 +40,12 @@
                   </tr>
                 </thead>
                 <tbody>
+                  {% for row in data_dashboard %}
                   <tr>
-                    <td>PLAYEN</td>
-                    <td align="center">17</td>
+                    <td>{{row.nama}}</td>
+                    <td align="center">{{row.jml}}</td>
                   </tr>
-                  <tr>
-                    <td>PLEMBUTAN</td>
-                    <td align="center">27</td>
-                  </tr>
-                  <tr>
-                    <td>BANDUNG</td>
-                    <td align="center">15</td>
-                  </tr>
-                  <tr>
-                    <td>BOGOR</td>
-                    <td align="center">10</td>
-                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
