@@ -9,5 +9,7 @@ urlpatterns = [
     path('getdetailmarkerposition/<int:item_id>', views.detailMarkerPosition, name='admn.detailmarkerposition'),
 
     path('about', views.about, name='about'),
+    
+    path('unauthorized', views.unauthorized, name='unauthorized'),
 
 ]

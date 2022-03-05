@@ -29,6 +29,10 @@ def dashboard(request):
 
 @login_required
 def settingusersPage(request):
+    user_login = request.user
+    if user_login.role_id != 1:
+        return HttpResponseRedirect('/unauthorized')
+
     context = {'segment': 'settingusers'}
 
     html_template = loader.get_template('admn/settingusers.html')
@@ -442,7 +446,11 @@ def deleteDataProduk(request, item_id):
 
 @login_required
 def verifikasiUMKMPage(request):
-    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, auth_user.username FROM dataumkm LEFT JOIN auth_user ON dataumkm.user_id = auth_user.id WHERE statusverifikasi = "F"')
+    user_login = request.user
+    if user_login.role_id != 1:
+        return HttpResponseRedirect('/unauthorized')
+    
+    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, users.username FROM dataumkm LEFT JOIN users ON dataumkm.user_id = users.user_id WHERE statusverifikasi = "F"')
     data_kelurahan = Kelurahan.objects.all()
     data_jenisusaha = JenisUsaha.objects.all()
     context = {

@@ -73,6 +73,12 @@ def about(request):
     html_template = loader.get_template('home/about.html')
     return HttpResponse(html_template.render(context, request))
 
+def unauthorized(request):
+    context = {'segment': 'unauthorized'}
+
+    html_template = loader.get_template('home/unauthorized.html')
+    return HttpResponse(html_template.render(context, request))
+
 def pages(request):
     context = {}
     # All resource paths end in .html.
