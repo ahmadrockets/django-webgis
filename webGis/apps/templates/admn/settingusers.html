@@ -45,22 +45,34 @@
                     <th><center>NAMA</center></th>
                     <th><center>USERNAME</center></th>
                     <th><center>ROLE</center></th>
+                    <th><center>NO TELP</center></th>
                     <th><center>EMAIL</center></th>
+                    <th><center>STATUS</center></th>
                     <th width="150"><center>AKSI</center></th>
                   </tr>
                 </thead>
                 <tbody>
+                  {% for row in data_users %}
                   <tr>
-                    <td>1</td>
-                    <td align="center">AHMAD F</td>
-                    <td align="center">ahmadf</td>
-                    <td align="center">Admin</td>
-                    <td align="center">ahmadrockets@gmail.com</td>
+                    <td>{{forloop.counter}}</td>
+                    <td align="center">{{row.nama}}</td>
+                    <td align="center">{{row.username}}</td>
+                    <td align="center">{{row.role}}</td>
+                    <td align="center">{{row.notelp}}</td>
+                    <td align="center">{{row.email}}</td>
                     <td align="center">
-                      <a class="btn btn-success btn-sm" onclick="edit(1)"><i class="fas fa-edit fa-fw"></i></a>
-                      <a class="btn btn-danger btn-sm" onclick="hapus()"><i class="fas fa-trash fa-fw"></i></a>
+                      {% if row.is_aktif == "T" %}
+                        <small class="badge badge-success">Aktif</small>
+                      {% else %}
+                        <small class="badge badge-danger">Tidak Aktif</small><br />
+                      {% endif %}
+                    </td>
+                    <td align="center">
+                      <a class="btn btn-success btn-sm" onclick="edit({{row.user_id}})"><i class="fas fa-edit fa-fw"></i></a>
+                      <a class="btn btn-danger btn-sm" onclick="hapus({{row.user_id}})"><i class="fas fa-trash fa-fw"></i></a>
                     </td>
                   </tr>
+                  {% endfor %}
                 </tbody>
               </table>
             </div>
@@ -131,6 +143,16 @@
                 </select>
               </div>
             </div>
+            <div class="form-group row">
+              <label for="user_status" class="col-sm-3 col-form-label">STATUS</label>
+              <div class="col-sm-9">
+                <select class="custom-select" id="user_status" name="user_status">
+                  <option value="">== Silahkan Pilih ==</option>
+                  <option value="T">Aktif</option>
+                  <option value="F">Tidak Aktif</option>
+                </select>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -153,12 +175,15 @@
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script>
+  $( document ).ready(function() {
+    window.cmd = "tambah";
+    window.id = "";
+  });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
-  function tambahdata() {
-    $("#modal_settinguser").modal("show");
+  function resetForm(){
     $("#user_nama").val("");
     $("#user_username").val("");
     $("#user_email").val("");
@@ -166,15 +191,82 @@
     $("#user_repassword").val("");
     $("#user_notelp").val("");
     $("#user_role").val("");
+    $("#user_status").val("");
   }
-  function edit(id) {
+  function tambahdata() {
+    window.cmd = "tambah";
+    window.id = "";
+    resetForm();
     $("#modal_settinguser").modal("show");
   }
-  function simpan() {
-    notifikasi('Sukses', "Data User Berhasil Disimpan", "success", "OK")
-    $("#modal_settinguser").modal("hide");
+  function edit(id) {
+    window.cmd = "edit";
+    window.id = id;
+    resetForm();
+    $.ajax({
+      url: '/admn/getdetailuser/'+id,
+      type: 'GET',
+      dataType: 'json',
+    })
+    .done(function(respon) {
+      var item = respon.item;
+      $("#user_nama").val(item.nama);
+      $("#user_username").val(item.username);
+      $("#user_email").val(item.email);
+      $("#user_password").val("");
+      $("#user_repassword").val("");
+      $("#user_notelp").val(item.notelp);
+      $("#user_role").val(item.role_id);
+      $("#user_status").val(item.is_aktif);
+      $("#modal_settinguser").modal("show");
+    })
+    .fail(function(jqXHR, exception) {
+      notifikasi('Gagal', "Gagal mendapatkan data UMKM", "error", "OK")
+    });
   }
-  function hapus() {
+  function simpan() {
+    if (window.cmd == "tambah" || window.cmd == "edit"){
+      var dataJson = JSON.stringify({
+        nama : $("#user_nama").val(),
+        username : $("#user_username").val(),
+        email : $("#user_email").val(),
+        password : $("#user_password").val(),
+        repassword : $("#user_repassword").val(),
+        notelp : $("#user_notelp").val(),
+        role : $("#user_role").val(),
+        status : $("#user_status").val(),
+      });
+      var url = "";
+      var type = "";
+      if(window.cmd == "tambah"){
+        var url = "/admn/user";
+        var type = "POST";
+      }else{
+        var url = "/admn/updateuser/"+window.id;
+        var type = "PATCH";
+      }
+      $.ajax({
+        url: url,
+        type: type,
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        data: dataJson,
+      })
+      .done(function(respon) {
+        notifikasi('Sukses', "Data User Berhasil Disimpan", "success", "OK")
+        $("#modal_settinguser").modal("hide");
+        setTimeout(window.location.reload(), 4000);
+      })
+      .fail(function(jqXHR, exception) {
+        notifikasi('Gagal', "Data User Gagal Disimpan", "error", "OK")
+      });
+    }else{
+      notifikasi('Gagal', "Invalid Method", "error", "OK")
+    }
+  }
+  function hapus(id) {
+    window.cmd = "hapus";
+    window.id = id;
     Swal.fire({
       title: 'Apakah anda yakin akan menghapus data ini?',
       showDenyButton: true,
@@ -183,7 +275,17 @@
       denyButtonText: `Batal`,
     }).then((result) => {
       if (result.isConfirmed) {
-        notifikasi('Sukses', "Data User Berhasil Dihapus", "success", "OK")
+        $.ajax({
+          url: "/admn/deleteuser/"+id,
+          type: 'DELETE',
+        })
+        .done(function(respon) {
+          notifikasi('Sukses', "Data User Berhasil Dihapus", "success", "OK")
+          setTimeout(window.location.reload(), 4000);
+        })
+        .fail(function(jqXHR, exception) {
+          notifikasi('Gagal', "Data User Berhasil Dihapus", "error", "OK")
+        });
       }
     })
   }

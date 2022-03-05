@@ -10,6 +10,7 @@ from .models import Kelurahan
 from .models import JenisUsaha
 from .models import DataProduk
 from apps.authentication.models import Roles
+from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -33,14 +34,160 @@ def settingusersPage(request):
     user_login = request.user
     if user_login.role_id != 1:
         return HttpResponseRedirect('/unauthorized')
+    
     data_roles = Roles.objects.all()
+    data_users = get_user_model().objects.raw('SELECT users.*, roles.nama AS role FROM users JOIN roles ON users.role_id = roles.role_id')
     context = {
         'segment': 'settingusers',
         'data_roles': data_roles,
+        'data_users': data_users,
     }
 
     html_template = loader.get_template('admn/settingusers.html')
     return HttpResponse(html_template.render(context, request))
+# api data user
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["POST"])
+def createDataUser(request):
+    data = json.loads(request.body.decode("utf-8"))
+
+    p_nama = data.get('nama')
+    p_username = data.get('username')
+    p_email = data.get('email')
+    p_password = data.get('password')
+    p_repassword = data.get('repassword')
+    p_notelp = data.get('notelp')
+    p_role = data.get('role')
+    p_status = data.get('status')
+
+    data = {}
+    status = 400
+
+    if p_password != p_repassword : 
+        data = {
+            "status": "failed",
+            "message": "Password dan Ulangi Password yang anda masukkan tidak sama"
+        }
+    else:
+        try:
+            user = get_user_model().objects.create(
+                role_id=p_role,
+                nama=p_nama,
+                username=p_username,
+                email=p_email,
+                notelp=p_notelp,
+                is_aktif=p_status,
+            )
+            user.set_password(p_password)
+            user.save()
+            data = {
+                "status": "success",
+                "message": "New user added to database"
+            }
+            status = 201 
+        except Exception as e:
+            data = {
+                "status": "failed",
+                "message": f"failed to save data to database {e}"
+            }
+            status = 400
+    return JsonResponse(data, status=status)
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["GET"])
+def getDetailUser(request, item_id):
+    response = {}
+    status = 400
+    try : 
+        item    = get_user_model().objects.get(user_id=item_id)
+        dataItem = {
+            'role_id' : item.role_id,
+            'nama' : item.nama,
+            'username' : item.username,
+            'email' : item.email,
+            'notelp' : item.notelp,
+            'is_aktif' : item.is_aktif,
+        }
+        response = {
+            'status':'success',
+            'message': 'Success get data user',
+            'item' : dataItem
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'data not found {e}',
+            'item':{}
+        }
+        status = 400
+    return JsonResponse(response, status=status)
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["PATCH"])
+def updateDataUser(request, item_id):
+    data = json.loads(request.body.decode("utf-8"))
+
+    response = {}
+    status = 400
+    
+    if data['password'] != "" and data['password'] != data['repassword'] : 
+        response = {
+            "status": "failed",
+            "message": "Password dan Ulangi Password yang anda masukkan tidak sama"
+        }
+    else:
+        try : 
+            item    = get_user_model().objects.get(user_id=item_id)
+            item.role_id = data['role']
+            item.nama = data['nama']
+            item.username = data['username']
+            item.email = data['email']
+            item.notelp = data['notelp']
+            item.is_aktif = data['status']
+
+            if data['password']!="":
+                item.set_password(data['password'])
+            
+            item.save()
+            
+            response = {
+                'status':'success',
+                'message': f'Item {item_id} has been updated'
+            }
+            status = 200
+        except Exception as e:
+            response = {
+                'status':'failed',
+                'message': f'failed update data {e}'
+            }
+            status = 400
+
+    return JsonResponse(response, status=status)
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["DELETE"])
+def deleteDataUser(request, item_id):
+    response = {}
+    status = 400
+    try : 
+        item     = get_user_model().objects.get(user_id=item_id)
+        item.delete()
+        response = {
+            'status':'success',
+            'message': f'Item {item_id} has been deletd'
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'failed delete data {e}'
+        }
+        status = 400
+
+    return JsonResponse(response, status=status)
 
 @login_required
 def dataUmkmPage(request):

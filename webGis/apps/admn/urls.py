@@ -3,7 +3,13 @@ from apps.admn import views
 
 urlpatterns = [
     path('dashboard', views.dashboard, name='admn.dashboard'),
+
+    # Data User
     path('settingusers', views.settingusersPage, name='admn.settingusers'),
+    path('user', views.createDataUser, name='admn.createdatauser'),
+    path('getdetailuser/<int:item_id>', views.getDetailUser, name='admn.getdetailuser'),
+    path('updateuser/<int:item_id>', views.updateDataUser, name='admn.updateuser'),
+    path('deleteuser/<int:item_id>', views.deleteDataUser, name='admn.deleteuser'),
 
     # Data UMKM
     path('dataumkm', views.dataUmkmPage, name='admn.dataumkm'),
@@ -20,6 +26,7 @@ urlpatterns = [
     path('updateproduk/<int:item_id>', views.updateDataProduk, name='admn.updatedataproduk'),
     path('deleteproduk/<int:item_id>', views.deleteDataProduk, name='admn.deleteproduk'),
     
+    # Verifikasi Data UMKM
     path('verifikasiumkm', views.verifikasiUMKMPage, name='admn.verifikasiumkm'),
     path('verifdataumkm/<int:item_id>', views.doVerifikasiUMKM, name='admn.doverifikasiumkm'),
     path('tolakdataumkm/<int:item_id>', views.doTolakUMKM, name='admn.dotolakumkm'),

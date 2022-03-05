@@ -19,9 +19,9 @@ def login(request):
                     auth_login(request, user)
                     return redirect("/")
                 else:
-                    msg = 'User is not active, please contact Administrator'
+                    msg = 'User sedang tidak aktif, silahkan hubungi Administrator'
             else:
-                msg = 'Invalid credentials'
+                msg = 'Username / Password yang anda masukkan tidak sesuai, silahkan ulangi kembali'
         else:
             msg = 'Error validating the form'
 
