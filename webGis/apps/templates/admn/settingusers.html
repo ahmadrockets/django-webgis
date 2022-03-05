@@ -125,8 +125,9 @@
               <div class="col-sm-9">
                 <select class="custom-select" id="user_role" name="user_role">
                   <option value="">== Silahkan Pilih ==</option>
-                  <option value="admin">Admin</option>
-                  <option value="staff">Pelaku UMKM</option>
+                  {% for c_role in data_roles %}
+                  <option value="{{c_role.role_id}}">{{c_role.nama}}</option>
+                  {% endfor %}
                 </select>
               </div>
             </div>

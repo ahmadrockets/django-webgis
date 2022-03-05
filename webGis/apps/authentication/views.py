@@ -15,8 +15,11 @@ def login(request):
             password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=password)
             if user is not None:
-                auth_login(request, user)
-                return redirect("/")
+                if user.is_aktif == 'T':
+                    auth_login(request, user)
+                    return redirect("/")
+                else:
+                    msg = 'User is not active, please contact Administrator'
             else:
                 msg = 'Invalid credentials'
         else:

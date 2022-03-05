@@ -9,6 +9,7 @@ from .models import DataUmkm
 from .models import Kelurahan
 from .models import JenisUsaha
 from .models import DataProduk
+from apps.authentication.models import Roles
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -32,8 +33,11 @@ def settingusersPage(request):
     user_login = request.user
     if user_login.role_id != 1:
         return HttpResponseRedirect('/unauthorized')
-
-    context = {'segment': 'settingusers'}
+    data_roles = Roles.objects.all()
+    context = {
+        'segment': 'settingusers',
+        'data_roles': data_roles,
+    }
 
     html_template = loader.get_template('admn/settingusers.html')
     return HttpResponse(html_template.render(context, request))

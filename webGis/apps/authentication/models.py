@@ -18,6 +18,7 @@ class UserManager(BaseUserManager):
   
   def create_superuser(self,email,username,nama,password,**other_fields):
     other_fields.setdefault('role_id',1)
+    other_fields.setdefault('is_aktif','T')
     if not email:
       raise ValueError(_("User must have an email address"))
     if not username:
@@ -31,6 +32,11 @@ class UserManager(BaseUserManager):
     return user
 
 class User(AbstractBaseUser):
+  STATUS_USER = (
+      ("T", "T"),
+      ("F", "F"),
+  )
+
   user_id = models.AutoField(primary_key=True)
   role_id = models.IntegerField(default=2)
   nama = models.CharField(max_length=50)
@@ -39,6 +45,7 @@ class User(AbstractBaseUser):
   password = models.CharField(max_length=128)
   email = models.CharField(max_length=50, null=True)
   notelp = models.CharField(max_length=50, null=True)
+  is_aktif = models.CharField(max_length=1, choices=STATUS_USER, default="F")
   last_login = models.DateTimeField(null=True)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
@@ -55,6 +62,7 @@ class User(AbstractBaseUser):
 
 
 class Roles(models.Model):
+  role_id = models.AutoField(primary_key=True)
   nama = models.CharField(max_length=50)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
