@@ -63,6 +63,8 @@
                     <td align="center">
                       {% if row.is_aktif == "T" %}
                         <small class="badge badge-success">Aktif</small>
+                      {% elif row.is_aktif == "P" %}
+                        <small class="badge badge-warning">Menunggu Verfikasi</small>
                       {% else %}
                         <small class="badge badge-danger">Tidak Aktif</small><br />
                       {% endif %}
@@ -149,6 +151,7 @@
                 <select class="custom-select" id="user_status" name="user_status">
                   <option value="">== Silahkan Pilih ==</option>
                   <option value="T">Aktif</option>
+                  <option value="P">Menunggu Verifikasi</option>
                   <option value="F">Tidak Aktif</option>
                 </select>
               </div>

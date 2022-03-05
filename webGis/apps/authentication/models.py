@@ -35,6 +35,7 @@ class User(AbstractBaseUser):
   STATUS_USER = (
       ("T", "T"),
       ("F", "F"),
+      ("P", "P"),
   )
 
   user_id = models.AutoField(primary_key=True)
