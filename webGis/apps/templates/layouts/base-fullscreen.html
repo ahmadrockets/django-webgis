@@ -21,5 +21,18 @@
   <!-- Specific Page JS goes HERE  -->
   {% block javascripts %}{% endblock javascripts %}
 
+  <!-- Sweet Alert -->
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+  function notifikasi(title, text, type, confirmButtonText) {
+    Swal.fire({
+      title: title,
+      text: text,
+      icon: type,
+      confirmButtonText: confirmButtonText
+    })
+  }
+</script>
+
 </body>
 </html>

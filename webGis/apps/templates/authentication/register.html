@@ -39,7 +39,7 @@
             {% endif %}            
         </p>
 
-        <form role="form" method="post" action="">
+        <form role="form" id="form_registeruser">
 
           {% csrf_token %}
 
@@ -133,11 +133,56 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-
-  <!-- jQuery -->
   <script src="/static/assets/plugins/jquery/jquery.min.js"></script>
-  <!-- Bootstrap 4 -->
   <script src="/static/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/assets/js/validator.min.js" integrity="sha512-dTu0vJs5ndrd3kPwnYixvOCsvef5SGYW/zSSK4bcjRBcZHzqThq7pt7PmCv55yb8iBvni0TSeIDV8RYKjZL36A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+  <script>
+    $('#form_registeruser').validator().on('submit', function (e) {
+      if (e.isDefaultPrevented()) {
+      } else {
+        e.preventDefault();
+        if($("#reg_password").val()!=$("#reg_repassword").val()){
+          notifikasi('Gagal', "Password yang anda masukkan tidak sesuai, silahkan periksa kembali", "error", "OK");
+        }else{
+          doRegisterUser();
+        }
+      }
+  });
+  function resetForm(){
+    $("#reg_nama").val("");
+    $("#reg_username").val("");
+    $("#reg_email").val("");
+    $("#reg_notelp").val("");
+    $("#reg_password").val("");
+    $("#reg_repassword").val("");
+  }
+  function doRegisterUser(){
+    var formData = new FormData();
+    formData.append('csrfmiddlewaretoken', $("input[name=csrfmiddlewaretoken]").val());
+    formData.append('nama', $("#reg_nama").val());
+    formData.append('username', $("#reg_username").val());
+    formData.append('email', $("#reg_email").val());
+    formData.append('notelp', $("#reg_notelp").val());
+    formData.append('password', $("#reg_password").val());
+    formData.append('repassword', $("#reg_repassword").val());
+
+    $.ajax({
+      url: '/auth/registeruser',
+      type: 'POST',
+      data: formData,
+      contentType: false,
+      processData: false,
+      cache: false,
+    })
+    .done(function(respon) {
+      notifikasi('Sukses', "Registrasi berhasil, silahkan menghubungi administrator untuk mengaktifkan user agar bisa login ke sistem", "success", "OK");
+      resetForm();
+    })
+    .fail(function(jqXHR, exception) {
+      notifikasi('Gagal', "Registrasi gagal, silahkan ulangi kembali", "error", "OK");
+    });
+  }
+  </script>
 {% endblock javascripts %}
 

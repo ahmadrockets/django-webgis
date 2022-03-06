@@ -30,42 +30,48 @@ class SignUpForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Nama",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "reg_nama"
             }
         ))
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Username",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "reg_username"
             }
         ))
     email = forms.EmailField(
         widget=forms.EmailInput(
             attrs={
                 "placeholder": "Email",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "reg_email"
             }
         ))
     notelp = forms.CharField(
         widget=forms.TextInput(
             attrs={
                 "placeholder": "Nomor Telepon / HP",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "reg_notelp"
             }
         ))
     password1 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "placeholder": "Password",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "reg_password"
             }
         ))
     password2 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "placeholder": "Password check",
-                "class": "form-control"
+                "class": "form-control",
+                "id": "reg_repassword"
             }
         ))
 
