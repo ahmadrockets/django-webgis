@@ -245,8 +245,8 @@ def createDataUMKM(request):
         'facebook' : p_facebook,
         'twitter' : p_twitter,
         'keterangan' : p_keterangan,
-        'statusverifikasi' : 'T' if (user_login.id==1) else 'F',
-        'user_id' : user_login.id,
+        'statusverifikasi' : 'T' if (user_login.user_id==1) else 'F',
+        'user_id' : user_login.user_id,
     }
     data = {}
     status = 400
@@ -627,7 +627,7 @@ def doVerifikasiUMKM(request, item_id):
         item                    = DataUmkm.objects.get(dataumkm_id=item_id)
         item.statusverifikasi   = 'T'
         item.verified_at        = datetime.datetime.now().strftime('%Y-%m-%d %H:%I:%S')
-        item.verified_by        = user_login.id
+        item.verified_by        = user_login.user_id
         item.save()
         response = {
             'status':'success',
@@ -656,7 +656,7 @@ def doTolakUMKM(request, item_id):
         item.statusverifikasi   = 'X'
         item.catatan_verifikasi = data['alasan_penolakan']
         item.verified_at        = datetime.datetime.now().strftime('%Y-%m-%d %H:%I:%S')
-        item.verified_by        = user_login.id
+        item.verified_by        = user_login.user_id
         item.save()
         response = {
             'status':'success',

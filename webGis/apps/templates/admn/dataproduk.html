@@ -251,9 +251,13 @@
     window.cmd = "tambah";
     window.id = "";
     resetForm();
-    $("#dataproduk_umkm").val({{search_umkm}});
-    $("#lbl-gambar").html("Pilih Gambar Produk");
-    $("#modal_dataproduk").modal("show");
+    if($("#search_umkm").val()!=""){
+      $("#dataproduk_umkm").val({{search_umkm}});
+      $("#lbl-gambar").html("Pilih Gambar Produk");
+      $("#modal_dataproduk").modal("show");
+    }else{
+      notifikasi('Informasi', "Mohon pilih UMKM terlebih dahulu untuk menambahkan data produk", "error", "OK")
+    }
   }
   function lihatgambar(id){
     $.ajax({
