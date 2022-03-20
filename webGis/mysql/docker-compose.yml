@@ -1,0 +1,14 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7-debian
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE='simumkm_playen'
+      - MYSQL_USER='root'
+      - MYSQL_PASSWORD='password'
+      - MYSQL_ROOT_PASSWORD='password'
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
