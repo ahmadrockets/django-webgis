@@ -18,6 +18,7 @@ urlpatterns = [
     path('getdetailumkm/<int:item_id>', views.getDetailUMKM, name='admn.getdetailumkm'),
     path('updateumkm/<int:item_id>', views.updateDataUMKM, name='admn.updatedataumkm'),
     path('deleteumkm/<int:item_id>', views.deleteDataUMKM, name='admn.deleteumkm'),
+    path('checkdataumkm', views.checkDataUmkm, name='admn.checkdataumkm'),
 
     # Data Produk
     path('dataproduk', views.dataProdukPage, name='admn.dataproduk'),

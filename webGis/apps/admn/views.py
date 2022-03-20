@@ -191,7 +191,10 @@ def deleteDataUser(request, item_id):
 
 @login_required
 def dataUmkmPage(request):
-    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id')
+    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha, users.username, users.nama as namauser FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id LEFT JOIN users ON users.user_id = dataumkm.user_id')
+    if request.user.role_id == 2 :
+        data_umkm = DataUmkm.objects.raw(f'SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha, users.username, users.nama as namauser FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id LEFT JOIN users ON users.user_id = dataumkm.user_id WHERE dataumkm.user_id={request.user.user_id}')
+
     data_kelurahan = Kelurahan.objects.all()
     data_jenisusaha = JenisUsaha.objects.all()
     context = {
@@ -341,10 +344,54 @@ def getDetailUMKM(request, item_id):
 
 @login_required
 @method_decorator(csrf_exempt, name='dispatch')
+@require_http_methods(["POST"])
+def checkDataUmkm(request ):
+    response = {}
+    status = 400
+    try : 
+        data = json.loads(request.body.decode("utf-8"))
+        q = data.get('q').lower()
+        item    = DataUmkm.objects.raw(f'SELECT * FROM dataumkm WHERE LOWER(dataumkm.nama_usaha)="{q}" AND (dataumkm.user_id=1 OR dataumkm.user_id="")')[0]
+        dataItem = {
+            'id' : item.dataumkm_id,
+            'nama_usaha' : item.nama_usaha,
+            'pemilik' : item.pemilik,
+            'thn_mulai' : item.thn_mulai,
+            'alamat' : item.alamat,
+            'kelurahan_id' : item.kelurahan_id,
+            'jenis_usaha_id' : item.jenis_usaha_id,
+            'namaproduk' : item.namaproduk,
+            'notelepon' : item.notelepon,
+            'koordinat' : item.koordinat,
+            'website' : item.website,
+            'email' : item.email,
+            'instagram' : item.instagram,
+            'facebook' : item.facebook,
+            'twitter' : item.twitter,
+            'keterangan' : item.keterangan,
+            'statusverifikasi' : item.statusverifikasi,
+        }
+        response = {
+            'status':'success',
+            'message': 'Success get data umkm',
+            'item' : dataItem
+        }
+        status = 200
+    except Exception as e:
+        response = {
+            'status':'failed',
+            'message': f'data not found {e}',
+            'item':{}
+        }
+        status = 400
+        
+    return JsonResponse(response, status=status)
+
+@login_required
+@method_decorator(csrf_exempt, name='dispatch')
 @require_http_methods(["PATCH"])
 def updateDataUMKM(request, item_id):
     data = json.loads(request.body.decode("utf-8"))
-
     response = {}
     status = 400
 
@@ -365,6 +412,11 @@ def updateDataUMKM(request, item_id):
         item.facebook           = data['facebook']
         item.twitter            = data['twitter']
         item.keterangan         = data['keterangan']
+
+        if data['cmd'] == 'claim' :
+            item.user_id = request.user.user_id
+            item.statusverifikasi = 'F'
+
         item.save()
         response = {
             'status':'success',

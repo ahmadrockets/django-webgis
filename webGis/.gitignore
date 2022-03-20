@@ -1,3 +1,4 @@
 .env
 apps/static/images/*
+__pycache__/
 db/

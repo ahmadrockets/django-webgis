@@ -49,6 +49,9 @@
                     <th><center>KELURAHAN</center></th>
                     <th><center>ALAMAT</center></th>
                     <th><center>STATUS</center></th>
+                    {% if request.user.role_id == 1 %}
+                    <th><center>USER</center></th>
+                    {% endif %}
                     <th width="100"><center>AKSI</center></th>
                   </tr>
                 </thead>
@@ -71,6 +74,9 @@
                         ({{row.catatan_verifikasi}})
                       {% endif %}
                     </td>
+                    {% if request.user.role_id == 1 %}
+                    <td>{{row.namauser}} ({{row.username}})</td>
+                    {% endif %}
                     <td align="center">
                       <a class="btn btn-success btn-sm" onclick="edit({{row.dataumkm_id}})"><i class="fas fa-edit fa-fw"></i></a>
                       <a class="btn btn-danger btn-sm" onclick="hapus({{row.dataumkm_id}})"><i class="fas fa-trash fa-fw"></i></a>
@@ -205,7 +211,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
           BATAL</button>
-        <button type="button" onclick="simpan()" class="btn btn-success"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
+        <button type="button" onclick="simpan()" id="formdataumkm_btnsimpan" class="btn btn-success"><i class="fas fa-save fa-fw"></i> SIMPAN</button>
       </div>
     </div>
   </div>
@@ -284,8 +290,9 @@
     });
   }
   function simpan() {
-    if (window.cmd == "tambah" || window.cmd == "edit"){
+    if (window.cmd == "tambah" || window.cmd == "edit" || window.cmd == 'claim'){
       var dataJson = JSON.stringify({
+        cmd : window.cmd,
         nama_usaha : $("#dataumkm_nama").val(),
         pemilik : $("#dataumkm_pemilik").val(),
         thn_mulai : $("#dataumkm_thnmulai").val(),
@@ -354,5 +361,55 @@
       }
     })
   }
+  $('#dataumkm_nama').change(function(){
+    if(window.cmd=='tambah'){
+      var dataJson = JSON.stringify({
+        q : $("#dataumkm_nama").val(),
+      });
+      $.ajax({
+        url: '/admn/checkdataumkm',
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        data: dataJson,
+      })
+      .done(function(respon) {
+        Swal.fire({
+          title: 'Ditemukan data dengan nama usaha yang sama',
+          html: 'Ditemukan data UMKM dengan nama usaha yang sama <b>('+respon.item.nama_usaha+')</b> dengan nama pemilik <b>'+respon.item.pemilik+' </b> dan alamat <b>'+respon.item.alamat+'</b>. Apakah anda akan melakukan klaim terhadap data UMKM ini?',
+          showDenyButton: true,
+          showCancelButton: false,
+          confirmButtonText: 'Klaim Data',
+          denyButtonText: `Buat Data Baru`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            var item = respon.item;
+            $("#formdataumkm_btnsimpan").html('<i class="fas fa-save fa-fw"></i> KLAIM DATA');
+            window.cmd = "claim";
+            window.id = item.id;
+            $("#dataumkm_nama").val(item.nama_usaha);
+            $("#dataumkm_pemilik").val(item.pemilik);
+            $("#dataumkm_thnmulai").val(item.thn_mulai);
+            $("#dataumkm_alamat").val(item.alamat);
+            $("#dataumkm_kelurahan").val(item.kelurahan_id);
+            $("#dataumkm_jenisusaha").val(item.jenis_usaha_id);
+            $("#dataumkm_notelepon").val(item.notelepon);
+            $("#dataumkm_koordinat").val(item.koordinat);
+            $("#dataumkm_website").val(item.website);
+            $("#dataumkm_email").val(item.email);
+            $("#dataumkm_instagram").val(item.instagram);
+            $("#dataumkm_fb").val(item.facebook);
+            $("#dataumkm_twitter").val(item.twitter);
+            $("#dataumkm_keterangan").val(item.keterangan);
+          }
+        })
+      })
+      .fail(function(jqXHR, exception) {
+        $("#formdataumkm_btnsimpan").html('<i class="fas fa-save fa-fw"></i> SIMPAN');
+        window.cmd = "tambah";
+        window.id = "";
+      });
+    }
+  })
 </script>
 {% endblock javascripts %}
