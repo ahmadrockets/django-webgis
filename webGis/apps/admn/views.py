@@ -460,6 +460,8 @@ def dataProdukPage(request):
     # search UMKM
     search_umkm = request.POST.get('search_umkm')
     data_umkm = DataUmkm.objects.all()
+    if request.user.role_id == 2 :
+        data_umkm = DataUmkm.objects.all().filter(user_id=request.user.user_id)
     
     data_produk = {}
     if search_umkm != "" and search_umkm != None:
