@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-p62&njui-+pu(m&6+$qs6es&(lzd%23s^86hrxm73of)ot+msq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '156.67.214.132']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '156.67.214.132', 'afstud.my.id']
 
 
 # Application definition
