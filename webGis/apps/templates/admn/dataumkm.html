@@ -9,6 +9,13 @@
 <!-- DataTables -->
 <link rel="stylesheet" href="/static/assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="/static/assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+
+<style>
+  div.pac-container {
+    z-index: 9999 !important;
+  }
+</style>
+
 {% endblock stylesheets %}
 
 
@@ -166,6 +173,17 @@
                 <input type="text" class="form-control" id="dataumkm_koordinat" name="dataumkm_koordinat" placeholder="Masukkan Koordinat lokasi">
               </div>
             </div>
+            <div class="form-group row" style="border:1px solid grey; padding:5px; margin-top:10px" id="div_choosemarker">
+              <div class="col-sm-12">
+                <input
+                  id="pac-input"
+                  class="form-control" 
+                  type="text"
+                  placeholder="Cari lokasi anda"
+                />
+                <div id="map_canvas" style="width:100%; height:300px;"></div>
+              </div>
+            </div>
             <div class="form-group row">
               <label for="dataumkm_website" class="col-sm-3 col-form-label">WEBSITE</label>
               <div class="col-sm-9">
@@ -227,7 +245,12 @@
 <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="https://maps.google.com/maps/api/js?key={{gmaps_api}}&sensor=false&libraries=places" type="text/javascript"></script>
 <script>
+  var defaultMarker = {
+    lat : -7.915979, 
+    lng : 110.558128
+  }
   $( document ).ready(function() {
     window.cmd = "tambah";
     window.id = "";
@@ -257,6 +280,10 @@
     window.id = "";
     resetForm();
     $("#modal_settingumkm").modal("show");
+
+    $("#dataumkm_koordinat").val(defaultMarker.lat+","+defaultMarker.lng);
+    $("#pac-input").val("");
+    initializeGoogleMap(defaultMarker);
   }
   function edit(id) {
     window.cmd = "edit";
@@ -277,6 +304,18 @@
       $("#dataumkm_jenisusaha").val(item.jenis_usaha_id);
       $("#dataumkm_notelepon").val(item.notelepon);
       $("#dataumkm_koordinat").val(item.koordinat);
+      $("#pac-input").val("");
+      var markerEdit = defaultMarker;
+      if(item.koordinat!="" && item.koordinat!=null){
+        var koordinatSplit = item.koordinat.split(",");
+        markerEdit = {
+          lat : koordinatSplit[0], 
+          lng : koordinatSplit[1]
+        }
+      }
+
+      initializeGoogleMap(markerEdit);
+
       $("#dataumkm_website").val(item.website);
       $("#dataumkm_email").val(item.email);
       $("#dataumkm_instagram").val(item.instagram);
@@ -411,5 +450,80 @@
       });
     }
   })
+
+  // Google Maps
+  function initializeGoogleMap(dataMarkerDefault) {
+      var myLatlng = new google.maps.LatLng(dataMarkerDefault.lat, dataMarkerDefault.lng);
+      var myOptions = {
+        zoom: 12,
+        center: myLatlng,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      }
+
+      var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+      var marker = new google.maps.Marker({
+              position: myLatlng,
+              map: map,
+              title: "Default Marker",
+              draggable:true
+      });
+      marker.addListener('dragend', handleEvent);
+
+      // Create the search box and link it to the UI element.
+      const input = document.getElementById("pac-input");
+      const searchBox = new google.maps.places.SearchBox(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      map.addListener("bounds_changed", () => {
+        searchBox.setBounds(map.getBounds());
+      });
+
+
+      searchBox.addListener("places_changed", () => {
+        const places = searchBox.getPlaces();
+        if (places.length == 0) {
+          return;
+        }
+        console.log("places". places);
+        // Clear Map
+        marker.setMap(null);
+
+        const bounds = new google.maps.LatLngBounds();
+
+        places.forEach((place) => {
+          if (!place.geometry || !place.geometry.location) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+
+          $("#dataumkm_koordinat").val(place.geometry.location.lat()+","+place.geometry.location.lng());
+          console.log("Geometry", );
+
+          // Add new map
+          marker = new google.maps.Marker({
+            position: place.geometry.location,
+            map: map,
+            title: "Default Marker",
+            draggable:true
+          });
+          marker.addListener('dragend', handleEvent);
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+
+        //Bound Maps
+        map.fitBounds(bounds);
+      });
+  }
+  function handleEvent(event) {
+    var lat = event.latLng.lat();
+    var lng = event.latLng.lng();
+    $("#dataumkm_koordinat").val(lat+","+lng);
+  }
 </script>
 {% endblock javascripts %}
