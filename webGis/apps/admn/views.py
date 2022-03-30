@@ -192,9 +192,9 @@ def deleteDataUser(request, item_id):
 @login_required
 def dataUmkmPage(request):
     gmaps_api = settings.GMAPS_API
-    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha, users.username, users.nama as namauser FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id LEFT JOIN users ON users.user_id = dataumkm.user_id')
+    data_umkm = DataUmkm.objects.raw('SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha, users.username, users.nama as namauser FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id LEFT JOIN users ON users.user_id = dataumkm.user_id ORDER BY dataumkm.created_at DESC')
     if request.user.role_id == 2 :
-        data_umkm = DataUmkm.objects.raw(f'SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha, users.username, users.nama as namauser FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id LEFT JOIN users ON users.user_id = dataumkm.user_id WHERE dataumkm.user_id={request.user.user_id}')
+        data_umkm = DataUmkm.objects.raw(f'SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha, users.username, users.nama as namauser FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id LEFT JOIN users ON users.user_id = dataumkm.user_id WHERE dataumkm.user_id={request.user.user_id}  ORDER BY dataumkm.created_at DESC')
 
     data_kelurahan = Kelurahan.objects.all()
     data_jenisusaha = JenisUsaha.objects.all()

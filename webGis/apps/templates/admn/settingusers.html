@@ -98,34 +98,34 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" id="form_settinguser">
           <div class="card-body">
             <div class="form-group row">
-              <label for="user_nama" class="col-sm-3 col-form-label">NAMA</label>
+              <label for="user_nama" class="col-sm-3 col-form-label">NAMA <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="user_nama" name="user_nama" placeholder="Masukkan Nama">
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_username" class="col-sm-3 col-form-label">USERNAME</label>
+              <label for="user_username" class="col-sm-3 col-form-label">USERNAME <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="user_username" name="user_username" placeholder="Masukkan Username">
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_email" class="col-sm-3 col-form-label">EMAIL</label>
+              <label for="user_email" class="col-sm-3 col-form-label">EMAIL <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="user_email" name="user_email" placeholder="Masukkan Email">
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_password" class="col-sm-3 col-form-label">PASSWORD</label>
+              <label for="user_password" class="col-sm-3 col-form-label">PASSWORD <i class="label_form_required isPassword">*</i></label>
               <div class="col-sm-9">
                 <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Masukkan Password">
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_repassword" class="col-sm-3 col-form-label">ULANGI PASSWORD</label>
+              <label for="user_repassword" class="col-sm-3 col-form-label">ULANGI PASSWORD <i class="label_form_required isPassword">*</i></label>
               <div class="col-sm-9">
                 <input type="password" class="form-control" id="user_repassword" name="user_repassword" placeholder="Masukkan Password">
               </div>
@@ -137,7 +137,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_role" class="col-sm-3 col-form-label">ROLE</label>
+              <label for="user_role" class="col-sm-3 col-form-label">ROLE <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <select class="custom-select" id="user_role" name="user_role">
                   <option value="">== Silahkan Pilih ==</option>
@@ -148,7 +148,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_status" class="col-sm-3 col-form-label">STATUS</label>
+              <label for="user_status" class="col-sm-3 col-form-label">STATUS <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <select class="custom-select" id="user_status" name="user_status">
                   <option value="">== Silahkan Pilih ==</option>
@@ -175,6 +175,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <!-- DataTables -->
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -183,11 +184,37 @@
   $( document ).ready(function() {
     window.cmd = "tambah";
     window.id = "";
+    validateForm();
   });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
+  function validateForm(){
+    $("#form_settinguser").validate({
+      rules: {
+        user_nama: "required",
+        user_username: "required",
+        user_email: "required",
+        user_password: "required",
+        user_repassword: "required",
+        user_role: "required",
+        user_status: "required",
+      },
+      messages:{
+        user_nama: "Mohon masukkan nama user",
+        user_username: "Mohon masukkan username",
+        user_email: "Mohon masukkan email user",
+        user_password: "Mohon masukkan password user",
+        user_repassword: "Mohon ulangi password user",
+        user_role: "Mohon pilih role user",
+        user_status: "Mohon pilih status user",
+      },
+      submitHandler: function() {
+        doSimpan();
+      }
+    });
+  }
   function resetForm(){
     $("#user_nama").val("");
     $("#user_username").val("");
@@ -197,17 +224,24 @@
     $("#user_notelp").val("");
     $("#user_role").val("");
     $("#user_status").val("");
+    $("#form_settinguser").validate().resetForm();
   }
   function tambahdata() {
     window.cmd = "tambah";
     window.id = "";
     resetForm();
+    $("#user_password").rules("add", "required");
+    $("#user_repassword").rules("add", "required");
     $("#modal_settinguser").modal("show");
+    $(".isPassword").show();
   }
   function edit(id) {
     window.cmd = "edit";
     window.id = id;
     resetForm();
+    $("#user_password").rules("remove", "required");
+    $("#user_repassword").rules("remove", "required");
+    $(".isPassword").hide();
     $.ajax({
       url: '/admn/getdetailuser/'+id,
       type: 'GET',
@@ -229,7 +263,10 @@
       notifikasi('Gagal', "Gagal mendapatkan data UMKM", "error", "OK")
     });
   }
-  function simpan() {
+  function simpan(){
+    $("#form_settinguser").submit();
+  }
+  function doSimpan() {
     if (window.cmd == "tambah" || window.cmd == "edit"){
       var dataJson = JSON.stringify({
         nama : $("#user_nama").val(),
