@@ -111,36 +111,36 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" id="form_dataumkm">
           <div class="card-body">
             <div class="form-group row">
-              <label for="dataumkm_nama" class="col-sm-3 col-form-label">NAMA USAHA</label>
+              <label for="dataumkm_nama" class="col-sm-3 col-form-label">NAMA USAHA <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="dataumkm_nama" name="dataumkm_nama" placeholder="Masukkan Nama Usaha">
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataumkm_pemilik" class="col-sm-3 col-form-label">PEMILIK</label>
+              <label for="dataumkm_pemilik" class="col-sm-3 col-form-label">PEMILIK <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="dataumkm_pemilik" name="dataumkm_pemilik"
                   placeholder="Masukkan Pemilik">
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataumkm_thnmulai" class="col-sm-3 col-form-label">TAHUN MULAI</label>
+              <label for="dataumkm_thnmulai" class="col-sm-3 col-form-label">TAHUN MULAI <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="number" class="form-control" id="dataumkm_thnmulai" name="dataumkm_thnmulai" placeholder="Masukkan Tahun Mulai">
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataumkm_alamat" class="col-sm-3 col-form-label">ALAMAT</label>
+              <label for="dataumkm_alamat" class="col-sm-3 col-form-label">ALAMAT <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="dataumkm_alamat" name="dataumkm_alamat"
                   placeholder="Masukkan Alamat">
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataumkm_kelurahan" class="col-sm-3 col-form-label">KELURAHAN</label>
+              <label for="dataumkm_kelurahan" class="col-sm-3 col-form-label">KELURAHAN <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <select class="custom-select" id="dataumkm_kelurahan" name="dataumkm_kelurahan">
                   <option value="">== Silahkan Pilih ==</option>
@@ -151,7 +151,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataumkm_jenisusaha" class="col-sm-3 col-form-label">JENIS USAHA</label>
+              <label for="dataumkm_jenisusaha" class="col-sm-3 col-form-label">JENIS USAHA <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <select class="custom-select" id="dataumkm_jenisusaha" name="dataumkm_jenisusaha">
                   <option value="">== Silahkan Pilih ==</option>
@@ -241,6 +241,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <!-- DataTables -->
+<script src="/static/assets/plugins/jquery-validation/jquery.validateLast.min.js"></script>
 <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -254,11 +255,35 @@
   $( document ).ready(function() {
     window.cmd = "tambah";
     window.id = "";
+    validateForm();
   });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
+  function validateForm(){
+    $("#form_dataumkm").validate({
+      rules: {
+        dataumkm_nama: "required",
+        dataumkm_pemilik: "required",
+        dataumkm_thnmulai: "required",
+        dataumkm_alamat: "required",
+        dataumkm_kelurahan: "required",
+        dataumkm_jenisusaha: "required",
+      },
+      messages:{
+        dataumkm_nama: "Mohon isikan nama usaha",
+        dataumkm_pemilik: "Mohon isikan nama pemilik usaha",
+        dataumkm_thnmulai: "Mohon isikan tahun mulai",
+        dataumkm_alamat: "Mohon isikan alamat usaha",
+        dataumkm_kelurahan: "Mohon pilih kelurahan lokasi usaha",
+        dataumkm_jenisusaha: "Mohon pilih jenis usaha",
+      },
+      submitHandler: function() {
+        doSimpan();
+      }
+    });
+  }
   function resetForm(){
     $("#dataumkm_nama").val("");
     $("#dataumkm_pemilik").val("");
@@ -274,6 +299,7 @@
     $("#dataumkm_fb").val("");
     $("#dataumkm_twitter").val("");
     $("#dataumkm_keterangan").val("");
+    $("#form_dataumkm").validate().resetForm();
   }
   function tambahdata() {
     window.cmd = "tambah";
@@ -328,7 +354,10 @@
       notifikasi('Gagal', "Gagal mendapatkan data UMKM", "error", "OK")
     });
   }
-  function simpan() {
+  function simpan(){
+    $("#form_dataumkm").submit();
+  }
+  function doSimpan() {
     if (window.cmd == "tambah" || window.cmd == "edit" || window.cmd == 'claim'){
       var dataJson = JSON.stringify({
         cmd : window.cmd,
