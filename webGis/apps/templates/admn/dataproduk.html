@@ -126,10 +126,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" id="form_dataproduk">
           <div class="card-body">
             <div class="form-group row">
-              <label for="dataproduk_umkm" class="col-sm-3 col-form-label">UMKM</label>
+              <label for="dataproduk_umkm" class="col-sm-3 col-form-label">UMKM <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <select class="custom-select" id="dataproduk_umkm" name="dataproduk_umkm">
                   <option value="">== Silahkan Pilih ==</option>
@@ -140,20 +140,20 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataproduk_namaproduk" class="col-sm-3 col-form-label">NAMA PRODUK</label>
+              <label for="dataproduk_namaproduk" class="col-sm-3 col-form-label">NAMA PRODUK <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="dataproduk_namaproduk" name="dataproduk_namaproduk"
                   placeholder="Masukkan Nama Produk">
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataproduk_keterangan" class="col-sm-3 col-form-label">KETERANGAN</label>
+              <label for="dataproduk_keterangan" class="col-sm-3 col-form-label">KETERANGAN <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <textarea class="form-control" placeholder="Masukkan Keterangan" id="dataproduk_keterangan" rows="5"></textarea>
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataproduk_harga" class="col-sm-3 col-form-label">HARGA</label>
+              <label for="dataproduk_harga" class="col-sm-3 col-form-label">HARGA <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="number" class="form-control" id="dataproduk_harga" name="dataproduk_harga"
                   placeholder="Masukkan Harga">
@@ -171,7 +171,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="dataproduk_status" class="col-sm-3 col-form-label">STATUS</label>
+              <label for="dataproduk_status" class="col-sm-3 col-form-label">STATUS <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <select class="custom-select" id="dataproduk_status" name="dataproduk_status">
                   <option value="">== Silahkan Pilih ==</option>
@@ -217,6 +217,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <!-- DataTables -->
+<script src="/static/assets/plugins/jquery-validation/jquery.validateLast.min.js"></script>
 <script src="/static/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/assets/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="/static/assets/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -233,11 +234,33 @@
         //replace the "Choose a file" label
         $(this).next('.custom-file-label').html(fileName);
     })
+    validateForm();
   });
   $("#dt_users").DataTable({
     "responsive": true,
     "autoWidth": false,
   });
+  function validateForm(){
+    $("#form_dataproduk").validate({
+      rules: {
+        dataproduk_umkm: "required",
+        dataproduk_namaproduk: "required",
+        dataproduk_keterangan: "required",
+        dataproduk_harga: "required",
+        dataproduk_status: "required",
+      },
+      messages:{
+        dataproduk_umkm: "Mohon pilih data UMKM",
+        dataproduk_namaproduk: "Mohon isikan nama produk",
+        dataproduk_keterangan: "Mohon isikan keterangan produk",
+        dataproduk_harga: "Mohon isikan harga prouk",
+        dataproduk_status: "Mohon pilih status produk",
+      },
+      submitHandler: function() {
+        doSimpan();
+      }
+    });
+  }
   function resetForm(){
     $("#dataproduk_umkm").val("");
     $("#dataproduk_namaproduk").val("");
@@ -246,6 +269,7 @@
     $("#dataproduk_gambar").val("");
     $("#dataproduk_status").val("");
     $("#gambar_sebelumnya").hide();
+    $("#form_dataproduk").validate().resetForm();
   }
   function tambahdata() {
     window.cmd = "tambah";
@@ -305,7 +329,10 @@
       notifikasi('Gagal', "Gagal mendapatkan data Produk", "error", "OK")
     });
   }
-  function simpan() {
+  function simpan(){
+    $("#form_dataproduk").submit();
+  }
+  function doSimpan() {
     if (window.cmd == "tambah" || window.cmd == "edit"){
       var gambar = $('input[name="dataproduk_gambar"]').get(0).files[0];
       var formData = new FormData();
