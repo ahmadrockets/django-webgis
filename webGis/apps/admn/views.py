@@ -215,24 +215,41 @@ def dataUmkmPage(request):
 @method_decorator(csrf_exempt, name='dispatch')
 @require_http_methods(["POST"])
 def createDataUMKM(request):
-    data = json.loads(request.body.decode("utf-8"))
-    user_login = request.user
+    user_login      = request.user
+    p_nama_usaha    = request.POST.get('nama_usaha', '')
+    p_pemilik       = request.POST.get('pemilik', '')
+    p_thn_mulai     = request.POST.get('thn_mulai', '')
+    p_alamat        = request.POST.get('alamat', '')
+    p_kelurahan_id  = request.POST.get('kelurahan_id', '')
+    p_jenis_usaha_id = request.POST.get('jenis_usaha_id', '')
+    p_namaproduk    = request.POST.get('namaproduk', '')
+    p_notelepon     = request.POST.get('notelepon', '')
+    p_koordinat     = request.POST.get('koordinat', '')
+    p_website       = request.POST.get('website', '')
+    p_email         = request.POST.get('email', '')
+    p_instagram     = request.POST.get('instagram', '')
+    p_facebook      = request.POST.get('facebook', '')
+    p_twitter       = request.POST.get('twitter', '')
+    p_keterangan    = request.POST.get('keterangan', '')
+    
+    p_bukti = ""
 
-    p_nama_usaha = data.get('nama_usaha')
-    p_pemilik = data.get('pemilik')
-    p_thn_mulai = data.get('thn_mulai')
-    p_alamat = data.get('alamat')
-    p_kelurahan_id = data.get('kelurahan_id')
-    p_jenis_usaha_id = data.get('jenis_usaha_id')
-    p_namaproduk = data.get('namaproduk')
-    p_notelepon = data.get('notelepon')
-    p_koordinat = data.get('koordinat')
-    p_website = data.get('website')
-    p_email = data.get('email')
-    p_instagram = data.get('instagram')
-    p_facebook = data.get('facebook')
-    p_twitter = data.get('twitter')
-    p_keterangan = data.get('keterangan')
+    # upload function
+    timenow = datetime.datetime.now().strftime('%d%m%Y%H%I%S')
+    img = request.FILES.get('bukti', False)
+
+    if img :
+        img_extension = os.path.splitext(img.name)[1]
+        image_folder = 'apps/static/images/'
+        if not os.path.exists(image_folder):
+            os.mkdir(image_folder)
+
+        img_save_path = image_folder+"buktiumkm_"+timenow+img_extension
+        with open(img_save_path, 'wb+') as f:
+            for chunk in img.chunks():
+                f.write(chunk)
+        
+        p_bukti = img_save_path.split("apps")[1]
 
     umkm_data = {
         'nama_usaha' : p_nama_usaha,
@@ -391,33 +408,49 @@ def checkDataUmkm(request ):
 
 @login_required
 @method_decorator(csrf_exempt, name='dispatch')
-@require_http_methods(["PATCH"])
+@require_http_methods(["POST"])
 def updateDataUMKM(request, item_id):
-    data = json.loads(request.body.decode("utf-8"))
     response = {}
     status = 400
 
     try : 
+        # upload file bukti usaha
+        p_bukti = ""
+        timenow = datetime.datetime.now().strftime('%d%m%Y%H%I%S')
+        img = request.FILES.get('bukti', False)
+        if img :
+            img_extension = os.path.splitext(img.name)[1]
+            image_folder = 'apps/static/images/'
+            if not os.path.exists(image_folder):
+                os.mkdir(image_folder)
+            img_save_path = image_folder+"buktiumkm_"+timenow+img_extension
+            with open(img_save_path, 'wb+') as f:
+                for chunk in img.chunks():
+                    f.write(chunk)
+            p_bukti = img_save_path.split("apps")[1]
+
+
         item                    = DataUmkm.objects.get(dataumkm_id=item_id)
+        item.nama_usaha         = request.POST.get('nama_usaha', '')
+        item.pemilik            = request.POST.get('pemilik', '')
+        item.thn_mulai          = request.POST.get('thn_mulai', '')
+        item.alamat             = request.POST.get('alamat', '')
+        item.kelurahan_id       = request.POST.get('kelurahan_id', '')
+        item.jenis_usaha_id     = request.POST.get('jenis_usaha_id', '')
+        item.notelepon          = request.POST.get('notelepon', '')
+        item.koordinat          = request.POST.get('koordinat', '')
+        item.website            = request.POST.get('website', '')
+        item.email              = request.POST.get('email', '')
+        item.instagram          = request.POST.get('instagram', '')
+        item.facebook           = request.POST.get('facebook', '')
+        item.twitter            = request.POST.get('twitter', '')
+        item.keterangan         = request.POST.get('keterangan', '')
 
-        item.nama_usaha         = data['nama_usaha']
-        item.pemilik            = data['pemilik']
-        item.thn_mulai          = data['thn_mulai']
-        item.alamat             = data['alamat']
-        item.kelurahan_id       = data['kelurahan_id']
-        item.jenis_usaha_id     = data['jenis_usaha_id']
-        item.notelepon          = data['notelepon']
-        item.koordinat          = data['koordinat']
-        item.website            = data['website']
-        item.email              = data['email']
-        item.instagram          = data['instagram']
-        item.facebook           = data['facebook']
-        item.twitter            = data['twitter']
-        item.keterangan         = data['keterangan']
-
-        if data['cmd'] == 'claim' :
+        if request.POST.get('cmd') == 'claim' :
             item.user_id = request.user.user_id
             item.statusverifikasi = 'F'
+            item.isklaim = 'T'
+            item.bukti_umkm = p_bukti
 
         item.save()
         response = {
@@ -428,7 +461,7 @@ def updateDataUMKM(request, item_id):
     except Exception as e:
         response = {
             'status':'failed',
-            'message': f'failed update data {e}'
+            'message': f'failed update data {e} '
         }
         status = 400
 

@@ -56,6 +56,9 @@
                     <td align="center">{{row.pemilik}}</td>
                     <td align="center">
                       <a onclick="lihatdetail({{row.dataumkm_id}})" type="button" class="btn btn-block btn-primary btn-xs">Lihat Detail</a>
+                      {% if row.isklaim == 'T' %}
+                        <a href="{{row.bukti_umkm}}" target="_blank" class="btn btn-block btn-success btn-xs">Lihat Bukti Klaim</a>
+                      {% endif %}
                     </td>
                     <td align="center">{{row.username}}</td>
                     <td align="center">

@@ -43,6 +43,8 @@ class DataUmkm(models.Model):
   user_id = models.IntegerField()
   statusverifikasi = models.CharField(max_length=1, choices=STATUS_DATAUMKM, default="F")
   catatan_verifikasi = models.CharField(max_length=255, blank=True)
+  isklaim = models.CharField(max_length=1, blank=True, default="F")
+  bukti_umkm = models.CharField(max_length=255, blank=True)
   verified_at = models.DateTimeField(null=True)
   verified_by = models.IntegerField(null=True)
   created_at = models.DateTimeField(auto_now_add=True)

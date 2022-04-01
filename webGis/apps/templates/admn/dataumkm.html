@@ -223,6 +223,17 @@
                 <textarea class="form-control" placeholder="Masukkan Keterangan" id="dataumkm_keterangan" rows="3"></textarea>
               </div>
             </div>
+            <div class="form-group row" id="div_formbuktiklaim" style="display:none;">
+              <label for="dataumkm_bukti" class="col-sm-3 col-form-label">BUKTI KLAIM <i class="label_form_required">*</i></label>
+              <div class="col-sm-9">
+                <div class="custom-file">
+                  <input type="file" class="custom-file-input" id="dataumkm_bukti" name="dataumkm_bukti">
+                  <label class="custom-file-label" id="lbl-gambar" for="dataumkm_bukti">Pilih Bukti UMKM</label>
+                  <input type="text" id="dataumkm_bukti_edit" name="dataumkm_bukti_edit" style="display:none">
+                  <div id="gambar_sebelumnya"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -255,6 +266,12 @@
   $( document ).ready(function() {
     window.cmd = "tambah";
     window.id = "";
+    $('#dataumkm_bukti').on('change',function(){
+        //get the file name
+        var fileName = $(this).val();
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    })
     validateForm();
   });
   $("#dt_users").DataTable({
@@ -278,6 +295,7 @@
         dataumkm_alamat: "Mohon isikan alamat usaha",
         dataumkm_kelurahan: "Mohon pilih kelurahan lokasi usaha",
         dataumkm_jenisusaha: "Mohon pilih jenis usaha",
+        dataumkm_bukti: "Mohon masukkan file bukti klaim usaha berupa gambar",
       },
       submitHandler: function() {
         doSimpan();
@@ -299,6 +317,8 @@
     $("#dataumkm_fb").val("");
     $("#dataumkm_twitter").val("");
     $("#dataumkm_keterangan").val("");
+    $("#div_formbuktiklaim").hide();
+    $("#dataumkm_bukti").rules("remove", "required");
     $("#form_dataumkm").validate().resetForm();
   }
   function tambahdata() {
@@ -359,23 +379,26 @@
   }
   function doSimpan() {
     if (window.cmd == "tambah" || window.cmd == "edit" || window.cmd == 'claim'){
-      var dataJson = JSON.stringify({
-        cmd : window.cmd,
-        nama_usaha : $("#dataumkm_nama").val(),
-        pemilik : $("#dataumkm_pemilik").val(),
-        thn_mulai : $("#dataumkm_thnmulai").val(),
-        alamat : $("#dataumkm_alamat").val(),
-        kelurahan_id : $("#dataumkm_kelurahan").val(),
-        jenis_usaha_id : $("#dataumkm_jenisusaha").val(),
-        notelepon : $("#dataumkm_notelepon").val(),
-        koordinat : $("#dataumkm_koordinat").val(),
-        website : $("#dataumkm_website").val(),
-        email : $("#dataumkm_email").val(),
-        instagram : $("#dataumkm_instagram").val(),
-        facebook : $("#dataumkm_fb").val(),
-        twitter : $("#dataumkm_twitter").val(),
-        keterangan : $("#dataumkm_keterangan").val(),
-      });
+      
+      var bukti = $('input[name="dataumkm_bukti"]').get(0).files[0];
+      var formData = new FormData();
+      formData.append('cmd', window.cmd);
+      formData.append('nama_usaha', $("#dataumkm_nama").val());
+      formData.append('pemilik', $("#dataumkm_pemilik").val());
+      formData.append('thn_mulai', $("#dataumkm_thnmulai").val());
+      formData.append('alamat', $("#dataumkm_alamat").val());
+      formData.append('kelurahan_id', $("#dataumkm_kelurahan").val());
+      formData.append('jenis_usaha_id', $("#dataumkm_jenisusaha").val());
+      formData.append('notelepon', $("#dataumkm_notelepon").val());
+      formData.append('koordinat', $("#dataumkm_koordinat").val());
+      formData.append('website', $("#dataumkm_website").val());
+      formData.append('email', $("#dataumkm_email").val());
+      formData.append('instagram', $("#dataumkm_instagram").val());
+      formData.append('facebook', $("#dataumkm_fb").val());
+      formData.append('twitter', $("#dataumkm_twitter").val());
+      formData.append('keterangan', $("#dataumkm_keterangan").val());
+      formData.append('bukti', bukti);
+
       var url = "";
       var type = "";
       if(window.cmd == "tambah"){
@@ -383,14 +406,15 @@
         var type = "POST";
       }else{
         var url = "/admn/updateumkm/"+window.id;
-        var type = "PATCH";
+        var type = "POST";
       }
       $.ajax({
         url: url,
         type: type,
-        contentType: "application/json; charset=utf-8",
-        dataType: 'json',
-        data: dataJson,
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
       })
       .done(function(respon) {
         notifikasi('Sukses', "Data UMKM Berhasil Disimpan", "success", "OK")
@@ -469,6 +493,8 @@
             $("#dataumkm_fb").val(item.facebook);
             $("#dataumkm_twitter").val(item.twitter);
             $("#dataumkm_keterangan").val(item.keterangan);
+            $("#div_formbuktiklaim").show();
+            $("#dataumkm_bukti").rules("add", "required");
           }
         })
       })
