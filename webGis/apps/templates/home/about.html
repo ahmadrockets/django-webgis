@@ -43,8 +43,48 @@
         <div class="row">
           <!-- right col (We are only adding the ID to make the widgets sortable)-->
           <section class="col-lg-12 connectedSortable">
-            <p>Sistem Informasi Pemetaan UMKM di Kecamatan Playen adalah sebuah sistem informasi yang digunakan untuk 
+            <div class="alert alert-light" role="alert">
+              <center><h1>Tentang Aplikasi</h1></center>
+              <p>Sistem Informasi Pemetaan UMKM di Kecamatan Playen adalah sebuah sistem informasi yang digunakan untuk 
             memetakan titik lokasi dari UMKM yang berada di Kecamatan Playen, Kabupaten Gunungkidul, Provinsi D.I. Yogyakarta. Aplikasi ini digunakan sebagai sarana promosi bagi UMKM dan sekaligus mempermudah masyarakat untuk menemukan letak lokasi dari UMKM di wilayah Kecamatan Playen.</p>
+            </div>
+            <div class="alert alert-light" role="alert">
+              <center><h2>Fitur Aplikasi</h2></center>
+              <div class="container">
+                <div class="row">
+                  <div class="col col-md-4 col-sm-6 col-xs-12">
+                    <div class="card">
+                      <img src="/static/assets/img/fitur_a.jpg" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <h5 class="card-title" style="font-weight:bolder;">PETA LOKASI</h5>
+                        <p class="card-text">Aplikasi terintegrasi dengan google maps, sehingga mempermudah untuk menemukan lokasi dari UMKM.</p>
+                        <a href="#" onclick="showTutorial('a')" class="btn btn-primary" style="text-decoration:none;">Lihat Tutorial</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col col-md-4 col-sm-6 col-xs-12">
+                    <div class="card">
+                      <img src="/static/assets/img/fitur_b.jpg" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <h5 class="card-title" style="font-weight:bolder;">DETAIL UMKM</h5>
+                        <p class="card-text">Dilengkapi dengan informasi detail UMKM yang lengkap mulai dari informasi umum, kontak dan informasi produk</p>
+                        <a href="#" onclick="showTutorial('b')" class="btn btn-primary" style="text-decoration:none;">Lihat Tutorial</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col col-md-4 col-sm-6 col-xs-12">
+                    <div class="card">
+                      <img src="/static/assets/img/fitur_c.jpg" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <h5 class="card-title" style="font-weight:bolder;">RUTE MENUJU UMKM</h5>
+                        <p class="card-text">Memudahkan anda untuk mencari rute menuju ke lokasi UMKM.</p><br />
+                        <a href="#" onclick="showTutorial('c')" class="btn btn-primary" style="text-decoration:none;">Lihat Tutorial</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
           <!-- right col -->
         </div>
@@ -54,6 +94,64 @@
     <!-- /.content -->
 
   </div>
+
+<div class="modal" id="modal_a" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">PETA LOKASI</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="/static/assets/img/a.gif" style="width:100%" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
+          TUTUP</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal_b" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">DETAIL UMKM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="/static/assets/img/b.gif" style="width:100%" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
+          TUTUP</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="modal_c" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">RUTE MENUJU UMKM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <img src="/static/assets/img/c.gif" style="width:100%" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fas fa-ban fa-fw"></i>
+          TUTUP</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
 
@@ -94,5 +192,12 @@
   <script src="/static/assets/js/pages/dashboard.js"></script>
   <!-- AdminLTE for demo purposes -->
   <script src="/static/assets/js/demo.js"></script>
+
+
+  <script>
+      function showTutorial(type){
+        $("#modal_"+type).modal("show");
+      }
+  </script>
 
 {% endblock javascripts %}
