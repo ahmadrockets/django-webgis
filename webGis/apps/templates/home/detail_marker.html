@@ -65,6 +65,14 @@
   <div class="bg-gray color-palette" style="width: 100%; padding:10px;"><span>PRODUK</span></div>
 </div>
 <div class="row mt-4">
+  {% if detail_umkm.notelepon != "" %}
+    <div class="alert alert-info" role="alert" style="width:100%">
+      Informasi pemesanan bisa menghubuni nomor {{detail_umkm.notelepon}} 
+       {% if link_wa != "" %}
+       atau melalui link berikut <a href="https://wa.me/{{link_wa}}" target="_blank" class="alert-link">Link pemesanan</a>
+       {% endif %}
+    </div>
+  {% endif %}
   {% for prod in data_produk %}
   <section class="col col-md-4">
     <div class="card">

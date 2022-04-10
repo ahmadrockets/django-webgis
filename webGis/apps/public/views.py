@@ -32,10 +32,16 @@ def index(request):
 def detailMarker(request, item_id):
     detail_umkm = DataUmkm.objects.raw(f'SELECT dataumkm.*, kelurahan.nama AS kelurahan, jenis_usaha.nama AS jenis_usaha FROM dataumkm  JOIN kelurahan ON kelurahan.kelurahan_id = dataumkm.kelurahan_id JOIN jenis_usaha ON jenis_usaha.jenis_usaha_id = dataumkm.jenis_usaha_id WHERE dataumkm.statusverifikasi="T" AND dataumkm.dataumkm_id={item_id}')[0]
     data_produk = DataProduk.objects.raw(f'SELECT produk.*, dataumkm.nama_usaha FROM produk JOIN dataumkm ON dataumkm.dataumkm_id = produk.dataumkm_id WHERE produk.dataumkm_id = {item_id} AND produk.status="T"')
+    link_wa = ""
+    if detail_umkm.notelepon !="":
+        if detail_umkm.notelepon[0:2]=="08":
+            link_wa = "62"+detail_umkm.notelepon[1:]
+
     context = {
         'segment': 'detail_marker',
         'detail_umkm':detail_umkm,
-        'data_produk':data_produk
+        'data_produk':data_produk,
+        'link_wa':link_wa
     }
     html_template = loader.get_template('home/detail_marker.html')
     return HttpResponse(html_template.render(context, request))
