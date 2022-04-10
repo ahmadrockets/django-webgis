@@ -46,7 +46,7 @@
                       <div class="form-group row">
                         <label for="search_umkm" class="col-sm-3 col-form-label">UMKM</label>
                         <div class="col-sm-6">
-                          <select class="custom-select" id="search_umkm" name="search_umkm">
+                          <select class="custom-select select2" id="search_umkm" name="search_umkm">
                             <option value="">== Silahkan Pilih ==</option>
                             {% for c_umkm in data_umkm %}
                             <option value="{{c_umkm.dataumkm_id}}">{{c_umkm.nama_usaha}}</option>
@@ -131,7 +131,7 @@
             <div class="form-group row">
               <label for="dataproduk_umkm" class="col-sm-3 col-form-label">UMKM <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
-                <select class="custom-select" id="dataproduk_umkm" name="dataproduk_umkm">
+                <select class="custom-select select2" id="dataproduk_umkm" name="dataproduk_umkm" style="width:100%">
                   <option value="">== Silahkan Pilih ==</option>
                   {% for cf_umkm in data_umkm %}
                   <option value="{{cf_umkm.dataumkm_id}}">{{cf_umkm.nama_usaha}}</option>
@@ -227,6 +227,7 @@
     window.cmd = "tambah";
     window.id = "";
     $("#search_umkm").val({{search_umkm}});
+    $("#search_umkm").select2("val","{{search_umkm}}");
 
     $('#dataproduk_gambar').on('change',function(){
         //get the file name
@@ -275,8 +276,9 @@
     window.cmd = "tambah";
     window.id = "";
     resetForm();
-    if($("#search_umkm").val()!=""){
+    if($("#search_umkm").select2("val")!=""){
       $("#dataproduk_umkm").val({{search_umkm}});
+      $("#dataproduk_umkm").select2("val","{{search_umkm}}");
       $("#lbl-gambar").html("Pilih Gambar Produk");
       $("#modal_dataproduk").modal("show");
     }else{
