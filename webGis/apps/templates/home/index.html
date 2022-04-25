@@ -44,7 +44,7 @@
                 {%endif%}
                 <div class="alert alert-success alert-dismissible fade show" role="alert" id="panel_route" style="display:none">
                   <b id="txt_panel_route"></b>
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <button type="button" onclick="reloadPage()" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
@@ -287,6 +287,11 @@
         notifikasi('Gagal', "Unable to find the distance via road.", "error", "OK")
       }
     });
+  }
+  function reloadPage(){
+    setTimeout(function() { 
+      window.location.reload()
+    }, 2000);
   }
 </script>
 {% endblock javascripts %}
