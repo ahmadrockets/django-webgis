@@ -226,8 +226,11 @@
    $( document ).ready(function() {
     window.cmd = "tambah";
     window.id = "";
-    $("#search_umkm").val({{search_umkm}});
-    $("#search_umkm").select2("val","{{search_umkm}}");
+    setTimeout(function() { 
+      $("#search_umkm").select2("val","{{search_umkm}}");
+      $('#search_umkm').select2().val({{search_umkm}})
+      $('#search_umkm').select2().val()
+    }, 1000);
 
     $('#dataproduk_gambar').on('change',function(){
         //get the file name
@@ -310,6 +313,10 @@
     })
     .done(function(respon) {
       $("#dataproduk_umkm").val(respon.item.dataumkm_id);
+      $("#dataproduk_umkm").select2("val","respon.item.dataumkm_id");
+      $('#dataproduk_umkm').select2().val(respon.item.dataumkm_id)
+      $('#dataproduk_umkm').select2().val()
+
       $("#dataproduk_namaproduk").val(respon.item.namaproduk);
       $("#dataproduk_keterangan").val(respon.item.deskripsi);
       $("#dataproduk_harga").val(parseInt(respon.item.harga));
