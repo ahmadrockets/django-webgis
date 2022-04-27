@@ -230,7 +230,7 @@
       $("#search_umkm").select2("val","{{search_umkm}}");
       $('#search_umkm').select2().val({{search_umkm}})
       $('#search_umkm').select2().val()
-    }, 1000);
+    }, 400);
 
     $('#dataproduk_gambar').on('change',function(){
         //get the file name
@@ -282,6 +282,10 @@
     if($("#search_umkm").select2("val")!=""){
       $("#dataproduk_umkm").val({{search_umkm}});
       $("#dataproduk_umkm").select2("val","{{search_umkm}}");
+      $('#dataproduk_umkm').select2().val({{search_umkm}})
+      $('#dataproduk_umkm').select2().val()
+
+
       $("#lbl-gambar").html("Pilih Gambar Produk");
       $("#modal_dataproduk").modal("show");
     }else{
