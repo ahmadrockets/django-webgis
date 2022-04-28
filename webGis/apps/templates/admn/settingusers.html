@@ -131,7 +131,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="user_notelp" class="col-sm-3 col-form-label">NO TELEPON</label>
+              <label for="user_notelp" class="col-sm-3 col-form-label">NO TELEPON <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="user_notelp" name="user_notelp" placeholder="Masukkan Nomor Telepon">
               </div>
@@ -197,6 +197,7 @@
         user_username: "required",
         user_email: "required",
         user_password: "required",
+        user_notelp: "required",
         user_repassword: "required",
         user_role: "required",
         user_status: "required",
@@ -205,6 +206,7 @@
         user_nama: "Mohon masukkan nama user",
         user_username: "Mohon masukkan username",
         user_email: "Mohon masukkan email user",
+        user_notelp: "Mohon masukkan nomor telepon",
         user_password: "Mohon masukkan password user",
         user_repassword: "Mohon ulangi password user",
         user_role: "Mohon pilih role user",
@@ -326,7 +328,7 @@
           setTimeout(window.location.reload(), 4000);
         })
         .fail(function(jqXHR, exception) {
-          notifikasi('Gagal', "Data User Berhasil Dihapus", "error", "OK")
+          notifikasi('Gagal', "Data User Gagal Dihapus", "error", "OK")
         });
       }
     })

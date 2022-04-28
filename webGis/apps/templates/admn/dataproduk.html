@@ -53,8 +53,8 @@
                             {%endfor%}
                           </select>
                         </div>
-                        <div class="col-sm-3">
-                          <button type="submit" href="#" class="btn btn-primary btn-sm mt-1"><i class="fas fa-search fa-fw"></i> TAMPILKAN DATA</button>
+                        <div class="col-sm-3" style="display:none;">
+                          <button id="btn_caridata" type="submit" href="#" class="btn btn-primary btn-sm mt-1"><i class="fas fa-search fa-fw"></i> TAMPILKAN DATA</button>
                         </div>
                       </div>
                     </div>
@@ -131,7 +131,7 @@
             <div class="form-group row">
               <label for="dataproduk_umkm" class="col-sm-3 col-form-label">UMKM <i class="label_form_required">*</i></label>
               <div class="col-sm-9">
-                <select class="custom-select select2" id="dataproduk_umkm" name="dataproduk_umkm" style="width:100%">
+                <select disabled class="custom-select select2" id="dataproduk_umkm" name="dataproduk_umkm" style="width:100%">
                   <option value="">== Silahkan Pilih ==</option>
                   {% for cf_umkm in data_umkm %}
                   <option value="{{cf_umkm.dataumkm_id}}">{{cf_umkm.nama_usaha}}</option>
@@ -226,11 +226,12 @@
    $( document ).ready(function() {
     window.cmd = "tambah";
     window.id = "";
-    setTimeout(function() { 
-      $("#search_umkm").select2("val","{{search_umkm}}");
-      $('#search_umkm').select2().val({{search_umkm}})
-      $('#search_umkm').select2().val()
-    }, 400);
+    $("#search_umkm").select2("val","{{search_umkm}}");
+    $('#search_umkm').select2().val({{search_umkm}})
+    $('#search_umkm').select2().val()
+    $(document.body).on("change","#search_umkm",function(){
+      $("#btn_caridata").click();
+    });
 
     $('#dataproduk_gambar').on('change',function(){
         //get the file name
@@ -406,7 +407,7 @@
           setTimeout(window.location.reload(), 4000);
         })
         .fail(function(jqXHR, exception) {
-          notifikasi('Gagal', "Data Produk Berhasil Dihapus", "error", "OK")
+          notifikasi('Gagal', "Data Produk Gagal Dihapus", "error", "OK")
         });
       }
     })
